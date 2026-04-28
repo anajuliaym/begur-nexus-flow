@@ -6,17 +6,17 @@ export default function Financial() {
   return (
     <div className="p-6 space-y-5">
       <PageHeader
-        title="Financial · carriers & settlements"
-        subtitle="Drivers, aggregates, trip settlements and commercial substitution payments"
-        actions={<><Btn variant="outline"><Download className="h-3 w-3"/> Export ledger</Btn><Btn variant="primary"><FileSignature className="h-3 w-3"/> Run settlement</Btn></>}
+        title="Financeiro · transportadores e acertos"
+        subtitle="Motoristas, agregados, acertos de viagem e pagamentos comerciais de substituição"
+        actions={<><Btn variant="outline"><Download className="h-3 w-3"/> Exportar razão</Btn><Btn variant="primary"><FileSignature className="h-3 w-3"/> Rodar acerto</Btn></>}
       />
 
       <div className="grid grid-cols-4 gap-3">
         {[
-          { l: "Pending settlement", v: "R$ 184,210", t: "warning" },
-          { l: "Paid this month", v: "R$ 1.42M", t: "success" },
-          { l: "Substitution payments", v: "R$ 12,840", t: "info" },
-          { l: "Active aggregates", v: "84", t: "primary" },
+          { l: "Acertos pendentes", v: "R$ 184.210", t: "warning" },
+          { l: "Pago este mês", v: "R$ 1,42M", t: "success" },
+          { l: "Pgtos de substituição", v: "R$ 12.840", t: "info" },
+          { l: "Agregados ativos", v: "84", t: "primary" },
         ].map(k => (
           <div key={k.l} className="panel p-4">
             <div className="stat-label">{k.l}</div>
@@ -28,14 +28,14 @@ export default function Financial() {
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-12 xl:col-span-7 panel">
           <div className="panel-header">
-            <div className="text-sm font-semibold flex items-center gap-2"><Wallet className="h-3.5 w-3.5"/> Drivers & aggregates</div>
-            <Filters items={["All","Available","On trip","Off-duty"]}/>
+            <div className="text-sm font-semibold flex items-center gap-2"><Wallet className="h-3.5 w-3.5"/> Motoristas e agregados</div>
+            <Filters items={["Todos","Disponíveis","Em viagem","Folga"]}/>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead className="text-muted-foreground border-b border-border">
                 <tr className="[&>th]:text-left [&>th]:font-medium [&>th]:px-3 [&>th]:py-2.5 uppercase tracking-wider text-[10px]">
-                  <th>Driver</th><th>Doc</th><th>CNH</th><th>Vehicle</th><th>Region</th><th>Trips/30d</th><th>OTIF</th><th>Rating</th><th>Status</th>
+                  <th>Motorista</th><th>Documento</th><th>CNH</th><th>Veículo</th><th>Região</th><th>Viagens/30d</th><th>OTIF</th><th>Avaliação</th><th>Status</th>
                 </tr>
               </thead>
               <tbody className="tnum">
@@ -49,7 +49,7 @@ export default function Financial() {
                     <td className="px-3 py-3">{d.trips30}</td>
                     <td className="px-3 py-3 text-success">{d.otif}%</td>
                     <td className="px-3 py-3">⭐ {d.rating}</td>
-                    <td className="px-3 py-3"><span className={`chip ${d.status==="Available"?"bg-success/10 text-success border-success/30":d.status==="On trip"?"bg-primary/10 text-primary border-primary/30":"border-border text-muted-foreground"}`}>{d.status}</span></td>
+                    <td className="px-3 py-3"><span className={`chip ${d.status==="Disponível"?"bg-success/10 text-success border-success/30":d.status==="Em viagem"?"bg-primary/10 text-primary border-primary/30":"border-border text-muted-foreground"}`}>{d.status}</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -59,8 +59,8 @@ export default function Financial() {
 
         <div className="col-span-12 xl:col-span-5 panel">
           <div className="panel-header">
-            <div className="text-sm font-semibold">Trip settlements · pending</div>
-            <Btn variant="primary"><Plus className="h-3 w-3"/> Generate</Btn>
+            <div className="text-sm font-semibold">Acertos de viagem · pendentes</div>
+            <Btn variant="primary"><Plus className="h-3 w-3"/> Gerar</Btn>
           </div>
           <div className="divide-y divide-border">
             {TRIPS.map(t => {
@@ -70,11 +70,11 @@ export default function Financial() {
                   <div className="h-8 w-8 rounded-md bg-surface-3 grid place-items-center text-[10px] font-bold">{t.driver.split(" ").map(s=>s[0]).join("")}</div>
                   <div className="flex-1 min-w-0">
                     <div className="text-xs font-semibold">{t.driver}</div>
-                    <div className="text-[10px] text-muted-foreground font-mono">{t.id} · {t.stops} stops · {t.distance}</div>
+                    <div className="text-[10px] text-muted-foreground font-mono">{t.id} · {t.stops} paradas · {t.distance}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-xs font-semibold tnum">R$ {pay.toLocaleString()}</div>
-                    <div className="text-[10px] text-muted-foreground">due Apr 30</div>
+                    <div className="text-xs font-semibold tnum">R$ {pay.toLocaleString("pt-BR")}</div>
+                    <div className="text-[10px] text-muted-foreground">vence 30/abr</div>
                   </div>
                   <Btn variant="ghost"><ArrowUpRight className="h-3 w-3"/></Btn>
                 </div>

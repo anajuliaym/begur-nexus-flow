@@ -3,23 +3,23 @@ import { Sparkles, X, Send, Mail, AlertTriangle, Package, TrendingUp } from "luc
 import { cn } from "@/lib/utils";
 
 const SUGGESTIONS = [
-  { icon: Mail, text: "Summarize new requests in the inbox" },
-  { icon: AlertTriangle, text: "Which orders will breach SLA today?" },
-  { icon: Package, text: "Suggest consolidations for tomorrow's wave" },
-  { icon: TrendingUp, text: "Top 3 routes by margin this week" },
+  { icon: Mail, text: "Resumir novas solicitações na caixa de entrada" },
+  { icon: AlertTriangle, text: "Quais pedidos vão estourar SLA hoje?" },
+  { icon: Package, text: "Sugerir consolidações para a onda de amanhã" },
+  { icon: TrendingUp, text: "Top 3 rotas por margem nesta semana" },
 ];
 
 const SCRIPTED = [
-  "Analysing 1,284 active orders across 6 hubs…",
-  "I detected 47 orders at SLA risk — 31 in Zona Leste/SP, 9 in Campinas, 7 in Vale.",
-  "I suggest pulling Zona Leste cluster forward to wave 2 (departure 13:40), reassigning to driver Patrícia Souza (capacity 4h available).",
-  "Estimated impact: ✅ SLA recovery on 28 orders · 💰 +R$ 1,240 trip margin · ⏱ −38 min average ETA.",
-  "Want me to draft the routing change and notify the affected clients?",
+  "Analisando 1.284 pedidos ativos em 6 hubs…",
+  "Detectei 47 pedidos com risco de SLA — 31 na Zona Leste/SP, 9 em Campinas, 7 no Vale.",
+  "Sugiro antecipar o cluster da Zona Leste para a onda 2 (saída 13:40), reatribuindo à motorista Patrícia Souza (capacidade ociosa de 4h).",
+  "Impacto estimado: ✅ recuperação de SLA em 28 pedidos · 💰 +R$ 1.240 de margem · ⏱ −38 min de ETA médio.",
+  "Quer que eu rascunhe a alteração de rota e notifique os clientes afetados?",
 ];
 
 export function AiCopilot({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [messages, setMessages] = useState<{ role: "user" | "ai"; text: string }[]>([
-    { role: "ai", text: "Hi Renata 👋 I'm Begur Copilot. I'm watching the operation in real time. How can I help?" },
+    { role: "ai", text: "Olá Renata 👋 Sou o Begur Copilot. Estou monitorando a operação em tempo real. Como posso ajudar?" },
   ]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
@@ -51,7 +51,7 @@ export function AiCopilot({ open, onClose }: { open: boolean; onClose: () => voi
           </div>
           <div className="flex-1">
             <div className="text-sm font-semibold">Begur Copilot</div>
-            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">AI · operational intelligence</div>
+            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">IA · inteligência operacional</div>
           </div>
           <button onClick={onClose} className="h-8 w-8 grid place-items-center rounded-md hover:bg-accent">
             <X className="h-4 w-4" />
@@ -81,7 +81,7 @@ export function AiCopilot({ open, onClose }: { open: boolean; onClose: () => voi
         </div>
 
         <div className="px-4 pb-2">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Suggestions</div>
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">Sugestões</div>
           <div className="grid grid-cols-2 gap-1.5">
             {SUGGESTIONS.map((s, i) => (
               <button
@@ -103,7 +103,7 @@ export function AiCopilot({ open, onClose }: { open: boolean; onClose: () => voi
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask anything about the operation…"
+            placeholder="Pergunte qualquer coisa sobre a operação…"
             className="flex-1 bg-surface-2 border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
           />
           <button type="submit" className="h-9 w-9 grid place-items-center rounded-md bg-primary text-primary-foreground">

@@ -6,16 +6,23 @@ import { cn } from "@/lib/utils";
 
 const CHANNEL_ICON: any = { Email: Mail, WhatsApp: MessageSquare, API: Globe, Portal: Layout, Manual: Edit3 };
 
+const STATUS_LABEL: Record<string, string> = {
+  new: "novo",
+  extracted: "extraído pela IA",
+  validated: "validado",
+  assigned: "atribuído",
+};
+
 export default function Requests() {
   const [sel, setSel] = useState(INBOX[0]);
   return (
     <div className="p-6 space-y-5">
       <PageHeader
-        title="Omnichannel inbox"
-        subtitle="Unified intake for requests across email, WhatsApp, client APIs and portals — extracted by AI"
+        title="Caixa de entrada omnichannel"
+        subtitle="Captação unificada de solicitações por e-mail, WhatsApp, APIs de clientes e portais — extraídas por IA"
         actions={<>
-          <Filters items={["All channels","Email","WhatsApp","API","Portal","Manual"]} />
-          <Btn variant="primary"><Sparkles className="h-3 w-3"/> Extract all</Btn>
+          <Filters items={["Todos os canais","E-mail","WhatsApp","API","Portal","Manual"]} />
+          <Btn variant="primary"><Sparkles className="h-3 w-3"/> Extrair tudo</Btn>
         </>}
       />
 
@@ -23,7 +30,7 @@ export default function Requests() {
         {/* Channels */}
         <div className="col-span-2 panel p-2 space-y-1">
           {[
-            { l: "All", c: 162 }, { l: "Email", c: 84, i: Mail }, { l: "WhatsApp", c: 36, i: MessageSquare },
+            { l: "Todos", c: 162 }, { l: "E-mail", c: 84, i: Mail }, { l: "WhatsApp", c: 36, i: MessageSquare },
             { l: "API", c: 28, i: Globe }, { l: "Portal", c: 11, i: Layout }, { l: "Manual", c: 3, i: Edit3 },
           ].map((s, i) => (
             <button key={s.l} className={cn(
@@ -36,7 +43,7 @@ export default function Requests() {
           ))}
           <div className="border-t border-border my-2" />
           <div className="text-[10px] text-muted-foreground px-2 uppercase tracking-wider">Status</div>
-          {["New","AI extracted","Validated","Assigned","Closed"].map(s => (
+          {["Novo","Extraído pela IA","Validado","Atribuído","Encerrado"].map(s => (
             <button key={s} className="w-full text-left px-2.5 py-1.5 rounded text-xs hover:bg-accent text-muted-foreground">{s}</button>
           ))}
         </div>
@@ -44,8 +51,8 @@ export default function Requests() {
         {/* Inbox list */}
         <div className="col-span-4 panel overflow-hidden flex flex-col">
           <div className="panel-header">
-            <div className="text-xs font-semibold">Queue · {INBOX.length}</div>
-            <Btn variant="ghost">Sort: newest</Btn>
+            <div className="text-xs font-semibold">Fila · {INBOX.length}</div>
+            <Btn variant="ghost">Ordenar: mais recentes</Btn>
           </div>
           <div className="overflow-y-auto divide-y divide-border">
             {INBOX.map(m => {
@@ -69,7 +76,7 @@ export default function Requests() {
                       m.status === "extracted" ? "bg-info/10 text-info border-info/30" :
                       m.status === "validated" ? "bg-primary/10 text-primary border-primary/30" :
                       m.status === "assigned" ? "bg-success/10 text-success border-success/30" :
-                      "bg-warning/10 text-warning border-warning/30")}>{m.status}</span>
+                      "bg-warning/10 text-warning border-warning/30")}>{STATUS_LABEL[m.status]}</span>
                     <span className="chip text-[10px] border-border text-muted-foreground">
                       <Sparkles className="h-2.5 w-2.5"/> {Math.round(m.ai_confidence * 100)}%
                     </span>
@@ -88,9 +95,9 @@ export default function Requests() {
               <span className="text-sm font-semibold">{sel.subject}</span>
             </div>
             <div className="flex gap-1.5">
-              <Btn variant="outline">Reject</Btn>
-              <Btn variant="outline">Assign analyst</Btn>
-              <Btn variant="primary">Create order <ArrowRight className="h-3 w-3"/></Btn>
+              <Btn variant="outline">Rejeitar</Btn>
+              <Btn variant="outline">Atribuir analista</Btn>
+              <Btn variant="primary">Criar pedido <ArrowRight className="h-3 w-3"/></Btn>
             </div>
           </div>
           <div className="overflow-y-auto p-5 space-y-4">
@@ -120,14 +127,14 @@ export default function Requests() {
             <div className="rounded-md border border-primary/30 bg-primary/5 p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
-                <div className="text-xs font-semibold text-primary">AI extraction · confidence {Math.round(sel.ai_confidence*100)}%</div>
+                <div className="text-xs font-semibold text-primary">Extração por IA · confiança {Math.round(sel.ai_confidence*100)}%</div>
                 <CheckCircle2 className="h-3.5 w-3.5 text-success ml-auto" />
               </div>
               <div className="grid grid-cols-2 gap-3 text-xs">
                 {[
-                  ["Client", sel.client], ["Destination", "Campinas/SP — CEP 13050-220"],
-                  ["SLA", "24 hours"], ["Items", "30 units · 3 SKUs"],
-                  ["Contact", "João Pedro · +55 19 9 9821-4410"], ["Service window", "08:00–18:00 weekdays"],
+                  ["Cliente", sel.client], ["Destino", "Campinas/SP — CEP 13050-220"],
+                  ["SLA", "24 horas"], ["Itens", "30 unidades · 3 SKUs"],
+                  ["Contato", "João Pedro · +55 19 9 9821-4410"], ["Janela de atendimento", "08:00–18:00 dias úteis"],
                 ].map(([k,v]) => (
                   <div key={k} className="flex justify-between border-b border-border pb-1.5">
                     <span className="text-muted-foreground">{k}</span>
@@ -136,18 +143,18 @@ export default function Requests() {
                 ))}
               </div>
               <div className="mt-3 flex gap-1.5">
-                <Btn variant="primary"><CheckCircle2 className="h-3 w-3"/> Validate & queue</Btn>
-                <Btn variant="outline"><User className="h-3 w-3"/> Assign to analyst</Btn>
-                <Btn variant="ghost"><FileText className="h-3 w-3"/> Edit fields</Btn>
+                <Btn variant="primary"><CheckCircle2 className="h-3 w-3"/> Validar e enfileirar</Btn>
+                <Btn variant="outline"><User className="h-3 w-3"/> Atribuir a analista</Btn>
+                <Btn variant="ghost"><FileText className="h-3 w-3"/> Editar campos</Btn>
               </div>
             </div>
 
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Activity</div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Atividade</div>
             <ol className="space-y-2 text-xs">
               {[
-                ["AI extracted 6 fields with 97% confidence", "2 min ago"],
-                ["Received via Email gateway", "2 min ago"],
-                ["Sender domain validated · vivo.com.br ✓", "2 min ago"],
+                ["IA extraiu 6 campos com 97% de confiança", "há 2 min"],
+                ["Recebido via gateway de e-mail", "há 2 min"],
+                ["Domínio do remetente validado · vivo.com.br ✓", "há 2 min"],
               ].map(([t, when], i) => (
                 <li key={i} className="flex gap-2.5">
                   <div className="h-2 w-2 rounded-full bg-primary mt-1.5"/>

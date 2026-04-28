@@ -13,11 +13,11 @@ export default function Orders() {
   return (
     <div className="p-6 space-y-5">
       <PageHeader
-        title="Orders"
-        subtitle={`Full lifecycle management · ${ORDERS.length} orders shown of 1,284 total`}
+        title="Pedidos"
+        subtitle={`Gestão de ciclo de vida completo · ${ORDERS.length} pedidos exibidos de 1.284 totais`}
         actions={<>
-          <Btn variant="outline"><Download className="h-3 w-3"/> Export</Btn>
-          <Btn variant="primary"><Plus className="h-3 w-3"/> New order</Btn>
+          <Btn variant="outline"><Download className="h-3 w-3"/> Exportar</Btn>
+          <Btn variant="primary"><Plus className="h-3 w-3"/> Novo pedido</Btn>
         </>}
       />
 
@@ -25,7 +25,7 @@ export default function Orders() {
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
         <button onClick={() => setTab("all")}
           className={`px-3 h-8 rounded-md text-xs font-medium border whitespace-nowrap ${tab==="all" ? "bg-primary/15 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground"}`}>
-          All <span className="ml-1.5 tnum opacity-70">{ORDERS.length}</span>
+          Todos <span className="ml-1.5 tnum opacity-70">{ORDERS.length}</span>
         </button>
         {counts.map(({ k, v, c }) => (
           <button key={k} onClick={() => setTab(k)}
@@ -37,9 +37,9 @@ export default function Orders() {
 
       <div className="panel overflow-hidden">
         <div className="panel-header">
-          <Filters items={["All clients","Vivo","Claro","TIM","Algar","Oi","Embratel"]} />
+          <Filters items={["Todos os clientes","Vivo","Claro","TIM","Algar","Oi","Embratel"]} />
           <div className="flex gap-1.5">
-            <Btn variant="outline">Bulk actions</Btn>
+            <Btn variant="outline">Ações em massa</Btn>
             <Btn variant="ghost"><MoreHorizontal className="h-3 w-3"/></Btn>
           </div>
         </div>
@@ -48,8 +48,8 @@ export default function Orders() {
             <thead className="text-muted-foreground border-b border-border bg-surface-1/50 sticky top-0">
               <tr className="[&>th]:text-left [&>th]:font-medium [&>th]:px-3 [&>th]:py-2.5 uppercase tracking-wider text-[10px]">
                 <th><input type="checkbox" className="accent-primary"/></th>
-                <th>Order</th><th>Client</th><th>Channel</th><th>Equipment</th>
-                <th>Destination</th><th>Driver</th><th>ETA</th><th>SLA</th><th>Status</th><th>Value</th><th>Created</th><th></th>
+                <th>Pedido</th><th>Cliente</th><th>Canal</th><th>Equipamento</th>
+                <th>Destino</th><th>Motorista</th><th>ETA</th><th>SLA</th><th>Status</th><th>Valor</th><th>Criado</th><th></th>
               </tr>
             </thead>
             <tbody className="tnum">
@@ -70,7 +70,7 @@ export default function Orders() {
                     <td className="px-3 py-2.5">{o.eta}</td>
                     <td className="px-3 py-2.5"><SlaBadge sla={o.sla}/></td>
                     <td className="px-3 py-2.5"><StatusBadge status={o.status}/></td>
-                    <td className="px-3 py-2.5">R$ {o.value.toLocaleString()}</td>
+                    <td className="px-3 py-2.5">R$ {o.value.toLocaleString("pt-BR")}</td>
                     <td className="px-3 py-2.5 text-muted-foreground">{o.created}</td>
                     <td className="px-3 py-2.5"><Btn variant="ghost" className="h-6 w-6 p-0"><MoreHorizontal className="h-3 w-3"/></Btn></td>
                   </tr>
@@ -80,10 +80,10 @@ export default function Orders() {
           </table>
         </div>
         <div className="px-4 py-2.5 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-          <span>Showing 1–30 of {filtered.length}</span>
+          <span>Exibindo 1–30 de {filtered.length}</span>
           <div className="flex gap-1">
-            <Btn variant="outline">Prev</Btn>
-            <Btn variant="outline">Next</Btn>
+            <Btn variant="outline">Anterior</Btn>
+            <Btn variant="outline">Próxima</Btn>
           </div>
         </div>
       </div>
