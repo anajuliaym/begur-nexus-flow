@@ -1,30 +1,30 @@
 import { PageHeader, Btn, StatusBadge, SlaBadge } from "@/components/ui-kit";
 import { ORDERS } from "@/data/mock";
-import { MapPin, Phone, MessageSquare, Camera, Navigation, CheckCircle2, Clock, Truck, Package, FileText, ChevronRight } from "lucide-react";
+import { MapPin, Phone, MessageSquare, Camera, Navigation, CheckCircle2, Clock, Truck, Package, FileText } from "lucide-react";
 
 export default function Tracking() {
   const order = ORDERS.find(o => o.status === "in_route")!;
 
   const timeline = [
-    { t: "Order created", time: "Yesterday 09:14", done: true, icon: FileText, by: "Vivo Empresas via Email" },
-    { t: "Validated by analyst", time: "Yesterday 09:32", done: true, icon: CheckCircle2, by: "A. Santos" },
-    { t: "Awaiting separation", time: "Yesterday 11:00", done: true, icon: Package, by: "CD Barueri" },
-    { t: "Equipment picked · SN 9000137", time: "Today 08:14", done: true, icon: Package, by: "Op. M. Lima" },
-    { t: "Loaded on dock 04", time: "Today 12:30", done: true, icon: Truck, by: "Wave 2" },
-    { t: "Driver in route", time: "Today 13:42", done: true, current: true, icon: Navigation, by: order.driver },
-    { t: "Out for delivery", time: "ETA 14:30", done: false, icon: MapPin, by: "—" },
-    { t: "Delivered with POD", time: "—", done: false, icon: CheckCircle2, by: "—" },
+    { t: "Pedido criado", time: "Ontem 09:14", done: true, icon: FileText, by: "Vivo Empresas via E-mail" },
+    { t: "Validado pelo analista", time: "Ontem 09:32", done: true, icon: CheckCircle2, by: "A. Santos" },
+    { t: "Aguardando separação", time: "Ontem 11:00", done: true, icon: Package, by: "CD Barueri" },
+    { t: "Equipamento separado · SN 9000137", time: "Hoje 08:14", done: true, icon: Package, by: "Op. M. Lima" },
+    { t: "Carregado na doca 04", time: "Hoje 12:30", done: true, icon: Truck, by: "Onda 2" },
+    { t: "Motorista em rota", time: "Hoje 13:42", done: true, current: true, icon: Navigation, by: order.driver },
+    { t: "Saiu para entrega", time: "ETA 14:30", done: false, icon: MapPin, by: "—" },
+    { t: "Entregue com comprovante", time: "—", done: false, icon: CheckCircle2, by: "—" },
   ];
 
   return (
     <div className="p-6 space-y-5">
       <PageHeader
-        title="Shipment tracking"
+        title="Rastreamento de entregas"
         subtitle={`${order.id} · ${order.client} · ${order.destination}`}
         actions={<>
-          <Btn variant="outline"><Phone className="h-3 w-3"/> Call driver</Btn>
-          <Btn variant="outline"><MessageSquare className="h-3 w-3"/> Notify client</Btn>
-          <Btn variant="primary"><Navigation className="h-3 w-3"/> Live track</Btn>
+          <Btn variant="outline"><Phone className="h-3 w-3"/> Ligar para motorista</Btn>
+          <Btn variant="outline"><MessageSquare className="h-3 w-3"/> Notificar cliente</Btn>
+          <Btn variant="primary"><Navigation className="h-3 w-3"/> Rastreio ao vivo</Btn>
         </>}
       />
 
@@ -34,9 +34,9 @@ export default function Tracking() {
           <div className="panel-header">
             <div className="text-sm font-semibold flex items-center gap-2">
               <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-ping"/><span className="relative h-2 w-2 rounded-full bg-success"/></span>
-              Live position · {order.driver}
+              Posição ao vivo · {order.driver}
             </div>
-            <div className="text-xs text-muted-foreground">ETA <b className="text-foreground">14:30</b> · 18 min remaining</div>
+            <div className="text-xs text-muted-foreground">ETA <b className="text-foreground">14:30</b> · 18 min restantes</div>
           </div>
           <div className="relative h-[420px] bg-grid bg-surface-1 overflow-hidden">
             {/* Faux map */}
@@ -52,9 +52,9 @@ export default function Tracking() {
             {/* Stops */}
             {[
               { x: 40, y: 380, label: "CD Barueri", done: true },
-              { x: 280, y: 280, label: "Stop 1 · Osasco", done: true },
-              { x: 520, y: 200, label: "Stop 2 · Pinheiros", current: true },
-              { x: 760, y: 120, label: "Stop 3 · Vila Madalena", done: false },
+              { x: 280, y: 280, label: "Parada 1 · Osasco", done: true },
+              { x: 520, y: 200, label: "Parada 2 · Pinheiros", current: true },
+              { x: 760, y: 120, label: "Parada 3 · Vila Madalena", done: false },
             ].map((s, i) => (
               <div key={i} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: s.x, top: s.y }}>
                 <div className={`h-4 w-4 rounded-full border-2 ${s.current ? "bg-primary border-primary-glow shadow-glow animate-pulse" : s.done ? "bg-success border-success" : "bg-surface-3 border-border"}`}/>
@@ -70,7 +70,7 @@ export default function Tracking() {
           </div>
           <div className="grid grid-cols-4 border-t border-border text-xs">
             {[
-              ["Distance","187 km"], ["Stops","12 / 14"], ["Speed","58 km/h"], ["Last ping","14 sec ago"],
+              ["Distância","187 km"], ["Paradas","12 / 14"], ["Velocidade","58 km/h"], ["Último ping","há 14 seg"],
             ].map(([l,v]) => (
               <div key={l} className="p-3 border-r border-border last:border-0">
                 <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{l}</div>
@@ -87,7 +87,7 @@ export default function Tracking() {
               <div className="h-10 w-10 rounded-md bg-gradient-primary grid place-items-center text-primary-foreground font-bold">{order.driver?.split(" ").map(s=>s[0]).join("")}</div>
               <div className="flex-1">
                 <div className="text-sm font-semibold">{order.driver}</div>
-                <div className="text-[11px] text-muted-foreground">VUC MNT-4A12 · ⭐ 4.9 · 42 trips/30d</div>
+                <div className="text-[11px] text-muted-foreground">VUC MNT-4A12 · ⭐ 4,9 · 42 viagens/30d</div>
               </div>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
@@ -97,7 +97,7 @@ export default function Tracking() {
           </div>
 
           <div className="panel">
-            <div className="panel-header"><div className="text-sm font-semibold flex items-center gap-2"><Clock className="h-3.5 w-3.5"/> Timeline</div></div>
+            <div className="panel-header"><div className="text-sm font-semibold flex items-center gap-2"><Clock className="h-3.5 w-3.5"/> Linha do tempo</div></div>
             <ol className="p-4 space-y-3">
               {timeline.map((e, i) => (
                 <li key={i} className="flex gap-3 relative">
@@ -118,7 +118,7 @@ export default function Tracking() {
           </div>
 
           <div className="panel p-4">
-            <div className="text-xs font-semibold flex items-center gap-2 mb-2"><Camera className="h-3.5 w-3.5"/> Proof of delivery</div>
+            <div className="text-xs font-semibold flex items-center gap-2 mb-2"><Camera className="h-3.5 w-3.5"/> Comprovante de entrega</div>
             <div className="grid grid-cols-3 gap-1.5">
               {[1,2,3].map(i => (
                 <div key={i} className="aspect-square rounded border border-border bg-grid bg-surface-2 grid place-items-center">
@@ -126,7 +126,7 @@ export default function Tracking() {
                 </div>
               ))}
             </div>
-            <div className="mt-2 text-[10px] text-muted-foreground">Awaiting POD upload from driver</div>
+            <div className="mt-2 text-[10px] text-muted-foreground">Aguardando upload do comprovante pelo motorista</div>
           </div>
         </div>
       </div>

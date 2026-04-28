@@ -1,24 +1,24 @@
 import { useState } from "react";
 import { PageHeader, Btn } from "@/components/ui-kit";
-import { Settings2, Users, Truck, Boxes, Workflow, Shield, ChevronRight, Plus, Sparkles } from "lucide-react";
+import { Users, Truck, Boxes, Workflow, Shield, ChevronRight, Plus, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const SECTIONS = [
-  { id: "users", label: "Users & roles", icon: Users, count: 38 },
-  { id: "customers", label: "Customers", icon: Users, count: 84 },
-  { id: "carriers", label: "Carriers / aggregates", icon: Truck, count: 12 },
-  { id: "equipment", label: "Equipment types", icon: Boxes, count: 64 },
-  { id: "workflows", label: "Status & workflows", icon: Workflow, count: 9 },
-  { id: "policies", label: "Security policies", icon: Shield, count: 5 },
+  { id: "users", label: "Usuários e papéis", icon: Users, count: 38 },
+  { id: "customers", label: "Clientes", icon: Users, count: 84 },
+  { id: "carriers", label: "Transportadoras / agregados", icon: Truck, count: 12 },
+  { id: "equipment", label: "Tipos de equipamento", icon: Boxes, count: 64 },
+  { id: "workflows", label: "Status e fluxos", icon: Workflow, count: 9 },
+  { id: "policies", label: "Políticas de segurança", icon: Shield, count: 5 },
 ];
 
 const ROLES = [
-  { name: "Operations Manager", users: 4, perms: ["full_access"], desc: "Full operational visibility & override" },
-  { name: "Analyst", users: 12, perms: ["intake","orders","occurrences"], desc: "Request validation & customer comms" },
-  { name: "Cross-dock Operator", users: 8, perms: ["cross_docking","scanning"], desc: "Warehouse separation & dispatch" },
-  { name: "Monitoring Operator", users: 6, perms: ["tracking","occurrences","comms"], desc: "Real-time tracking & exception handling" },
-  { name: "Customer", users: 412, perms: ["portal_self_service"], desc: "External portal access only" },
-  { name: "Administrator", users: 2, perms: ["all"], desc: "System & master data administration" },
+  { name: "Gerente de Operações", users: 4, perms: ["acesso_total"], desc: "Visibilidade operacional total e poder de override" },
+  { name: "Analista", users: 12, perms: ["captacao","pedidos","ocorrencias"], desc: "Validação de solicitações e comunicação com cliente" },
+  { name: "Operador de Cross-dock", users: 8, perms: ["cross_docking","bipagem"], desc: "Separação no armazém e despacho" },
+  { name: "Operador de Monitoramento", users: 6, perms: ["rastreamento","ocorrencias","comunicacao"], desc: "Rastreamento em tempo real e tratativa de exceções" },
+  { name: "Cliente", users: 412, perms: ["portal_self_service"], desc: "Acesso somente ao portal externo" },
+  { name: "Administrador", users: 2, perms: ["tudo"], desc: "Administração de sistema e cadastros mestres" },
 ];
 
 export default function Admin() {
@@ -26,9 +26,9 @@ export default function Admin() {
   return (
     <div className="p-6 space-y-5">
       <PageHeader
-        title="Admin · master data & configuration"
-        subtitle="System configuration, users, roles and workflow rules"
-        actions={<><Btn variant="primary"><Plus className="h-3 w-3"/> New entity</Btn></>}
+        title="Admin · cadastros e configuração"
+        subtitle="Configuração do sistema, usuários, papéis e regras de fluxo"
+        actions={<><Btn variant="primary"><Plus className="h-3 w-3"/> Nova entidade</Btn></>}
       />
 
       <div className="grid grid-cols-12 gap-4">
@@ -48,8 +48,8 @@ export default function Admin() {
         <div className="col-span-9 space-y-4">
           <div className="panel">
             <div className="panel-header">
-              <div className="text-sm font-semibold flex items-center gap-2"><Users className="h-3.5 w-3.5"/> Roles & permissions</div>
-              <Btn variant="primary"><Plus className="h-3 w-3"/> New role</Btn>
+              <div className="text-sm font-semibold flex items-center gap-2"><Users className="h-3.5 w-3.5"/> Papéis e permissões</div>
+              <Btn variant="primary"><Plus className="h-3 w-3"/> Novo papel</Btn>
             </div>
             <div className="divide-y divide-border">
               {ROLES.map(r => (
@@ -66,7 +66,7 @@ export default function Admin() {
                   </div>
                   <div className="text-right">
                     <div className="text-xs font-semibold tnum">{r.users}</div>
-                    <div className="text-[10px] text-muted-foreground">users</div>
+                    <div className="text-[10px] text-muted-foreground">usuários</div>
                   </div>
                   <Btn variant="ghost"><ChevronRight className="h-3 w-3"/></Btn>
                 </div>
@@ -76,23 +76,23 @@ export default function Admin() {
 
           <div className="panel">
             <div className="panel-header">
-              <div className="text-sm font-semibold flex items-center gap-2"><Workflow className="h-3.5 w-3.5"/> Workflow rules · order status</div>
-              <Btn variant="outline"><Sparkles className="h-3 w-3"/> AI suggest</Btn>
+              <div className="text-sm font-semibold flex items-center gap-2"><Workflow className="h-3.5 w-3.5"/> Regras de fluxo · status do pedido</div>
+              <Btn variant="outline"><Sparkles className="h-3 w-3"/> Sugerir com IA</Btn>
             </div>
             <div className="p-4 space-y-2">
               {[
-                { from: "Awaiting separation", to: "Awaiting routing", trigger: "All items picked & verified", auto: true },
-                { from: "Awaiting routing", to: "In route", trigger: "Trip manifest generated & accepted by driver", auto: true },
-                { from: "In route", to: "Exception pending", trigger: "Driver flags issue OR ETA breached by 20min", auto: true },
-                { from: "Exception pending", to: "Not delivered", trigger: "Manual analyst confirmation after 2 attempts", auto: false },
+                { from: "Aguardando separação", to: "Aguardando roteirização", trigger: "Todos os itens separados e conferidos", auto: true },
+                { from: "Aguardando roteirização", to: "Em rota", trigger: "Manifesto gerado e aceito pelo motorista", auto: true },
+                { from: "Em rota", to: "Ocorrência pendente", trigger: "Motorista sinaliza problema OU ETA estourado em 20min", auto: true },
+                { from: "Ocorrência pendente", to: "Não entregue", trigger: "Confirmação manual do analista após 2 tentativas", auto: false },
               ].map((w, i) => (
                 <div key={i} className="flex items-center gap-2 px-3 py-2.5 rounded-md border border-border bg-surface-1 text-xs">
                   <span className="chip border-border text-muted-foreground">{w.from}</span>
                   <ChevronRight className="h-3 w-3 text-muted-foreground"/>
                   <span className="chip border-border text-muted-foreground">{w.to}</span>
-                  <span className="text-muted-foreground flex-1 ml-2 truncate">when · {w.trigger}</span>
+                  <span className="text-muted-foreground flex-1 ml-2 truncate">quando · {w.trigger}</span>
                   <span className={`chip text-[10px] ${w.auto ? "bg-success/10 text-success border-success/30" : "bg-warning/10 text-warning border-warning/30"}`}>
-                    {w.auto ? "Auto" : "Manual"}
+                    {w.auto ? "Automático" : "Manual"}
                   </span>
                 </div>
               ))}

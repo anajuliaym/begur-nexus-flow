@@ -12,13 +12,13 @@ export default function Dashboard() {
   return (
     <div className="p-6 space-y-5">
       <PageHeader
-        title="Control Tower"
-        subtitle="Real-time operational command center · Tuesday, April 28, 2026 · 14:32 BRT"
+        title="Torre de Controle"
+        subtitle="Centro de comando operacional em tempo real · Terça-feira, 28 de abril de 2026 · 14:32 BRT"
         actions={
           <>
-            <Filters items={["Today","This week","MTD","QTD"]} />
-            <Btn variant="outline"><Radio className="h-3 w-3" /> Live</Btn>
-            <Btn variant="primary"><Sparkles className="h-3 w-3" /> AI digest</Btn>
+            <Filters items={["Hoje","Esta semana","Mês","Trimestre"]} />
+            <Btn variant="outline"><Radio className="h-3 w-3" /> Ao vivo</Btn>
+            <Btn variant="primary"><Sparkles className="h-3 w-3" /> Resumo IA</Btn>
           </>
         }
       />
@@ -33,15 +33,15 @@ export default function Dashboard() {
         <div className="col-span-12 xl:col-span-8 panel">
           <div className="panel-header">
             <div>
-              <div className="text-sm font-semibold">Operational heatmap — deliveries / hour</div>
-              <div className="text-xs text-muted-foreground">Last 7 days · São Paulo metropolitan region</div>
+              <div className="text-sm font-semibold">Mapa de calor operacional — entregas / hora</div>
+              <div className="text-xs text-muted-foreground">Últimos 7 dias · Região metropolitana de São Paulo</div>
             </div>
-            <Filters items={["Volume","SLA risk","Margin"]} />
+            <Filters items={["Volume","Risco SLA","Margem"]} />
           </div>
           <div className="p-4">
             <div className="flex items-start gap-2">
               <div className="flex flex-col gap-1 text-[10px] text-muted-foreground pt-5">
-                {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d => <div key={d} className="h-5 flex items-center">{d}</div>)}
+                {["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].map(d => <div key={d} className="h-5 flex items-center">{d}</div>)}
               </div>
               <div className="flex-1">
                 <div className="grid grid-cols-24 gap-[3px]" style={{ gridTemplateColumns: "repeat(24, minmax(0, 1fr))" }}>
@@ -54,16 +54,16 @@ export default function Dashboard() {
                       <div key={i}
                         className="h-5 rounded-[3px] border border-white/5"
                         style={{ background: `hsl(188 92% 48% / ${a})` }}
-                        title={`${c.v} deliveries`}
+                        title={`${c.v} entregas`}
                       />
                     );
                   })}
                 </div>
                 <div className="mt-3 flex items-center gap-2 text-[10px] text-muted-foreground">
-                  <span>Less</span>
+                  <span>Menor</span>
                   {[0.1,0.3,0.5,0.7,0.9].map(a => <span key={a} className="h-3 w-3 rounded-sm" style={{background:`hsl(188 92% 48% / ${a})`}}/>)}
-                  <span>More</span>
-                  <span className="ml-auto">Peak: 14:00–17:00 · Tue/Thu</span>
+                  <span>Maior</span>
+                  <span className="ml-auto">Pico: 14:00–17:00 · Ter/Qui</span>
                 </div>
               </div>
             </div>
@@ -76,9 +76,9 @@ export default function Dashboard() {
           <div className="panel-header relative">
             <div className="flex items-center gap-2">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
-              <div className="text-sm font-semibold">AI Recommendations</div>
+              <div className="text-sm font-semibold">Recomendações da IA</div>
             </div>
-            <span className="chip bg-primary/10 text-primary border-primary/30">4 new</span>
+            <span className="chip bg-primary/10 text-primary border-primary/30">4 novas</span>
           </div>
           <div className="p-3 space-y-2 relative">
             {AI_RECS.map((r, i) => (
@@ -90,12 +90,12 @@ export default function Dashboard() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <div className="text-xs font-semibold">{r.title}</div>
-                      <span className={`chip text-[10px] ${r.impact === "high" ? "bg-destructive/10 text-destructive border-destructive/30" : "bg-warning/10 text-warning border-warning/30"}`}>{r.impact}</span>
+                      <span className={`chip text-[10px] ${r.impact === "alta" ? "bg-destructive/10 text-destructive border-destructive/30" : "bg-warning/10 text-warning border-warning/30"}`}>{r.impact}</span>
                     </div>
                     <div className="text-xs text-muted-foreground mt-1 leading-relaxed">{r.body}</div>
                     <div className="mt-2 flex items-center gap-1.5">
-                      <Btn variant="primary" className="h-7 px-2.5">Apply</Btn>
-                      <Btn variant="ghost" className="h-7 px-2.5">Dismiss</Btn>
+                      <Btn variant="primary" className="h-7 px-2.5">Aplicar</Btn>
+                      <Btn variant="ghost" className="h-7 px-2.5">Dispensar</Btn>
                     </div>
                   </div>
                 </div>
@@ -112,15 +112,15 @@ export default function Dashboard() {
                 <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-ping" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
               </span>
-              Live shipments — in route
+              Entregas em rota — ao vivo
             </div>
-            <Btn variant="ghost">View all <ArrowUpRight className="h-3 w-3" /></Btn>
+            <Btn variant="ghost">Ver todas <ArrowUpRight className="h-3 w-3" /></Btn>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead className="text-muted-foreground border-b border-border">
                 <tr className="[&>th]:text-left [&>th]:font-medium [&>th]:px-3 [&>th]:py-2 uppercase tracking-wider text-[10px]">
-                  <th>Order</th><th>Client</th><th>Destination</th><th>Driver</th><th>ETA</th><th>SLA</th><th>Status</th>
+                  <th>Pedido</th><th>Cliente</th><th>Destino</th><th>Motorista</th><th>ETA</th><th>SLA</th><th>Status</th>
                 </tr>
               </thead>
               <tbody className="tnum">
@@ -144,14 +144,14 @@ export default function Dashboard() {
         <div className="col-span-12 xl:col-span-4 space-y-4">
           <div className="panel">
             <div className="panel-header">
-              <div className="text-sm font-semibold flex items-center gap-2"><Boxes className="h-3.5 w-3.5" /> Cross-dock workload</div>
+              <div className="text-sm font-semibold flex items-center gap-2"><Boxes className="h-3.5 w-3.5" /> Carga do cross-dock</div>
             </div>
             <div className="p-4 space-y-3">
               {[
-                { name: "Separation queue", v: 142, max: 200, tone: "primary" },
-                { name: "Awaiting service order", v: 38, max: 80, tone: "info" },
-                { name: "Loading dock", v: 22, max: 30, tone: "warning" },
-                { name: "Dispatch ready", v: 89, max: 120, tone: "success" },
+                { name: "Fila de separação", v: 142, max: 200, tone: "primary" },
+                { name: "Aguardando OS", v: 38, max: 80, tone: "info" },
+                { name: "Doca de carregamento", v: 22, max: 30, tone: "warning" },
+                { name: "Pronto para despacho", v: 89, max: 120, tone: "success" },
               ].map(b => (
                 <div key={b.name}>
                   <div className="flex items-center justify-between text-xs mb-1">
@@ -168,15 +168,15 @@ export default function Dashboard() {
 
           <div className="panel">
             <div className="panel-header">
-              <div className="text-sm font-semibold flex items-center gap-2 text-destructive"><AlertTriangle className="h-3.5 w-3.5" /> Exceptions</div>
-              <span className="chip bg-destructive/10 text-destructive border-destructive/30">23 open</span>
+              <div className="text-sm font-semibold flex items-center gap-2 text-destructive"><AlertTriangle className="h-3.5 w-3.5" /> Ocorrências</div>
+              <span className="chip bg-destructive/10 text-destructive border-destructive/30">23 em aberto</span>
             </div>
             <div className="divide-y divide-border">
               {[
-                { id: "OCR-1184", t: "Refusal — Vivo", time: "12 min" },
-                { id: "OCR-1183", t: "Delay — Marginal Tietê", time: "34 min" },
-                { id: "OCR-1182", t: "Damage — TIM Live", time: "1h" },
-                { id: "OCR-1179", t: "Equipment serial divergence", time: "5h" },
+                { id: "OCR-1184", t: "Recusa — Vivo", time: "12 min" },
+                { id: "OCR-1183", t: "Atraso — Marginal Tietê", time: "34 min" },
+                { id: "OCR-1182", t: "Avaria — TIM Live", time: "1h" },
+                { id: "OCR-1179", t: "Divergência de serial", time: "5h" },
               ].map(e => (
                 <div key={e.id} className="p-3 flex items-center gap-3 hover:bg-accent/40">
                   <span className="h-7 w-7 rounded-md bg-destructive/10 text-destructive grid place-items-center"><AlertTriangle className="h-3.5 w-3.5"/></span>
@@ -194,14 +194,14 @@ export default function Dashboard() {
         {/* Trips overview */}
         <div className="col-span-12 panel">
           <div className="panel-header">
-            <div className="text-sm font-semibold flex items-center gap-2"><TrendingUp className="h-3.5 w-3.5"/> Active trips · viability</div>
-            <Filters items={["All","In progress","Planned","Closed"]} />
+            <div className="text-sm font-semibold flex items-center gap-2"><TrendingUp className="h-3.5 w-3.5"/> Viagens ativas · viabilidade</div>
+            <Filters items={["Todas","Em andamento","Planejadas","Encerradas"]} />
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead className="text-muted-foreground border-b border-border">
                 <tr className="[&>th]:text-left [&>th]:font-medium [&>th]:px-3 [&>th]:py-2 uppercase tracking-wider text-[10px]">
-                  <th>Trip</th><th>Driver / Vehicle</th><th>Region</th><th>Stops</th><th>Distance</th><th>Revenue</th><th>Cost</th><th>Margin</th><th>Status</th>
+                  <th>Viagem</th><th>Motorista / Veículo</th><th>Região</th><th>Paradas</th><th>Distância</th><th>Receita</th><th>Custo</th><th>Margem</th><th>Status</th>
                 </tr>
               </thead>
               <tbody className="tnum">
@@ -212,8 +212,8 @@ export default function Dashboard() {
                     <td className="px-3 py-2.5">{t.region}</td>
                     <td className="px-3 py-2.5">{t.stops}</td>
                     <td className="px-3 py-2.5">{t.distance}</td>
-                    <td className="px-3 py-2.5 text-success">R$ {t.revenue.toLocaleString()}</td>
-                    <td className="px-3 py-2.5 text-muted-foreground">R$ {t.cost.toLocaleString()}</td>
+                    <td className="px-3 py-2.5 text-success">R$ {t.revenue.toLocaleString("pt-BR")}</td>
+                    <td className="px-3 py-2.5 text-muted-foreground">R$ {t.cost.toLocaleString("pt-BR")}</td>
                     <td className="px-3 py-2.5">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold">{t.margin}%</span>
