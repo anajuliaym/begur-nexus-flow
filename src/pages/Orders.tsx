@@ -22,14 +22,18 @@ export default function Orders() {
       />
 
       {/* Status pills com contagem por estágio do workflow */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 animate-fade-in-up stagger-children" style={{ animationDelay: '100ms' }}>
         <button onClick={() => setTab("all")}
-          className={`px-3 h-8 rounded-md text-xs font-medium border whitespace-nowrap ${tab==="all" ? "bg-primary/15 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground"}`}>
+          className={`px-3 h-8 rounded-md text-xs font-medium border whitespace-nowrap transition-all duration-300 btn-press hover-scale ${tab==="all" ? "bg-primary/15 text-primary border-primary/30 animate-border-glow" : "border-border text-muted-foreground hover:text-foreground hover:border-primary/30"}`}>
           Todos <span className="ml-1.5 tnum opacity-70">{ORDERS.length}</span>
         </button>
-        {counts.map(({ k, v, c }) => (
-          <button key={k} onClick={() => setTab(k)}
-            className={`px-3 h-8 rounded-md text-xs font-medium border whitespace-nowrap ${tab===k ? "bg-primary/15 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground"}`}>
+        {counts.map(({ k, v, c }, i) => (
+          <button 
+            key={k} 
+            onClick={() => setTab(k)}
+            className={`px-3 h-8 rounded-md text-xs font-medium border whitespace-nowrap transition-all duration-300 btn-press hover-scale ${tab===k ? "bg-primary/15 text-primary border-primary/30 animate-border-glow" : "border-border text-muted-foreground hover:text-foreground hover:border-primary/30"}`}
+            style={{ animationDelay: `${(i + 1) * 50}ms` }}
+          >
             {v.label} <span className="ml-1.5 tnum opacity-70">{c}</span>
           </button>
         ))}
@@ -53,20 +57,24 @@ export default function Orders() {
               </tr>
             </thead>
             <tbody className="tnum">
-              {filtered.slice(0, 30).map(o => {
+              {filtered.slice(0, 30).map((o, i) => {
                 const Ch = CHANNEL_ICON[o.channel] ?? Edit3;
                 return (
-                  <tr key={o.id} className="border-b border-border row-hover">
+                  <tr 
+                    key={o.id} 
+                    className="border-b border-border row-animate animate-fade-in-up"
+                    style={{ animationDelay: `${i * 25}ms` }}
+                  >
                     <td className="px-3 py-2.5"><input type="checkbox" className="accent-primary"/></td>
                     <td className="px-3 py-2.5">
                       <div className="font-mono text-[11px] text-primary">{o.id}</div>
                       <div className="text-[10px] text-muted-foreground flex items-center gap-1">
-                        {o.serialRequired && <><Paperclip className="h-2.5 w-2.5"/>requer SN</>}
-                        {o.hasPhysicalDoc && <span className="text-warning ml-1">📄 NF física</span>}
+                        {o.serialRequired && <><Paperclip className="h-2.5 w-2.5 animate-pulse"/>requer SN</>}
+                        {o.hasPhysicalDoc && <span className="text-warning ml-1 animate-pulse">📄 NF física</span>}
                       </div>
                     </td>
                     <td className="px-3 py-2.5 font-medium">{o.client}</td>
-                    <td className="px-3 py-2.5"><span className="inline-flex items-center gap-1 text-muted-foreground"><Ch className="h-3 w-3"/>{o.channel}</span></td>
+                    <td className="px-3 py-2.5"><span className="inline-flex items-center gap-1 text-muted-foreground"><Ch className="h-3 w-3 transition-transform duration-300 group-hover:scale-110"/>{o.channel}</span></td>
                     <td className="px-3 py-2.5 text-muted-foreground truncate max-w-[180px]" title={o.cargo}>{o.qty} {o.unit} · {o.cargo}</td>
                     <td className="px-3 py-2.5">{o.destination}</td>
                     <td className="px-3 py-2.5 text-muted-foreground">{o.driver ?? "—"}</td>
@@ -75,7 +83,7 @@ export default function Orders() {
                     <td className="px-3 py-2.5"><StatusBadge status={o.status}/></td>
                     <td className="px-3 py-2.5">R$ {o.value.toLocaleString("pt-BR")}</td>
                     <td className="px-3 py-2.5 text-muted-foreground">{o.created}</td>
-                    <td className="px-3 py-2.5"><Btn variant="ghost" className="h-6 w-6 p-0"><MoreHorizontal className="h-3 w-3"/></Btn></td>
+                    <td className="px-3 py-2.5"><Btn variant="ghost" className="h-6 w-6 p-0 hover:rotate-90 transition-transform duration-300"><MoreHorizontal className="h-3 w-3"/></Btn></td>
                   </tr>
                 );
               })}

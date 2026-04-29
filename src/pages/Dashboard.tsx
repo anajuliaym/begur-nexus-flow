@@ -24,8 +24,12 @@ export default function Dashboard() {
       />
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-        {KPIS.map(k => <Kpi key={k.label} {...k} />)}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 stagger-children">
+        {KPIS.map((k, i) => (
+          <div key={k.label} style={{ animationDelay: `${i * 50}ms` }}>
+            <Kpi {...k} />
+          </div>
+        ))}
       </div>
 
       {/* Pipeline da entrega — backlog por etapa */}
@@ -42,16 +46,20 @@ export default function Dashboard() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-px bg-border">
           {BACKLOG_BY_STAGE.map((s, i) => (
-            <div key={s.stage} className="bg-card p-3 hover:bg-accent/30 transition cursor-pointer">
+            <div 
+              key={s.stage} 
+              className="bg-card p-3 hover:bg-accent/30 transition-all duration-300 cursor-pointer card-interactive animate-fade-in-up group"
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
               <div className="flex items-center justify-between mb-1">
                 <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{s.stage}</div>
-                <div className="text-[10px] text-muted-foreground tnum">#{i+1}</div>
+                <div className="text-[10px] text-muted-foreground tnum transition-all duration-300 group-hover:text-primary">#{i+1}</div>
               </div>
-              <div className="text-2xl font-bold tnum">{s.count}</div>
+              <div className="text-2xl font-bold tnum number-animate" style={{ animationDelay: `${i * 80 + 150}ms` }}>{s.count}</div>
               <div className="text-[10px] text-muted-foreground truncate" title={s.owner}>{s.owner}</div>
               <div className="flex items-center gap-2 mt-2 text-[10px]">
-                {s.atRisk > 0 && <span className="text-warning font-semibold">⚠ {s.atRisk} risco</span>}
-                {s.breached > 0 && <span className="text-destructive font-semibold">● {s.breached} estourado</span>}
+                {s.atRisk > 0 && <span className="text-warning font-semibold animate-pulse">⚠ {s.atRisk} risco</span>}
+                {s.breached > 0 && <span className="text-destructive font-semibold badge-pulse">● {s.breached} estourado</span>}
                 {s.atRisk === 0 && s.breached === 0 && <span className="text-success">✓ saudável</span>}
               </div>
             </div>
@@ -73,19 +81,29 @@ export default function Dashboard() {
             <Btn>Reatribuir em massa</Btn>
           </div>
           <div className="divide-y divide-border">
-            {HANDOFFS.map(h => (
-              <div key={h.id} className="px-4 py-2.5 row-hover flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full shrink-0" style={{
-                  background: h.sla === "breached" ? "hsl(var(--destructive))" : h.sla === "at_risk" ? "hsl(var(--warning))" : "hsl(var(--success))"
-                }} />
+            {HANDOFFS.map((h, i) => (
+              <div 
+                key={h.id} 
+                className="px-4 py-2.5 row-animate flex items-center gap-3 animate-fade-in-left"
+                style={{ animationDelay: `${i * 60}ms` }}
+              >
+                <div 
+                  className={cn(
+                    "w-2 h-2 rounded-full shrink-0",
+                    h.sla === "breached" && "status-dot-animate"
+                  )} 
+                  style={{
+                    background: h.sla === "breached" ? "hsl(var(--destructive))" : h.sla === "at_risk" ? "hsl(var(--warning))" : "hsl(var(--success))"
+                  }} 
+                />
                 <div className="text-xs font-mono text-muted-foreground w-20">{h.order}</div>
                 <div className="flex items-center gap-1.5 text-xs flex-1">
                   <span className="text-muted-foreground truncate max-w-[160px]">{h.from}</span>
-                  <ArrowRight className="h-3 w-3 text-muted-foreground shrink-0" />
+                  <ArrowRight className="h-3 w-3 text-muted-foreground shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
                   <span className="font-semibold truncate max-w-[180px]">{h.to}</span>
                 </div>
-                <span className="chip bg-surface-2 text-muted-foreground border-border">{h.stage}</span>
-                {h.blocker && <span className="text-[11px] text-warning truncate max-w-[200px]" title={h.blocker}>⚠ {h.blocker}</span>}
+                <span className="chip bg-surface-2 text-muted-foreground border-border transition-all duration-200 hover:border-primary/30">{h.stage}</span>
+                {h.blocker && <span className="text-[11px] text-warning truncate max-w-[200px] animate-pulse" title={h.blocker}>⚠ {h.blocker}</span>}
                 <div className="text-xs text-muted-foreground tnum w-16 text-right">{h.age}</div>
               </div>
             ))}
@@ -169,9 +187,18 @@ export default function Dashboard() {
           <Link to="/occurrences" className="text-xs text-primary hover:underline">Ver todas</Link>
         </div>
         <div className="divide-y divide-border">
-          {OCCURRENCES.slice(0, 5).map(o => (
-            <div key={o.id} className="px-4 py-2.5 row-hover flex items-center gap-3">
-              <span className={cn("chip text-[10px]", o.severity === "high" ? "bg-destructive/10 text-destructive border-destructive/30" : o.severity === "medium" ? "bg-warning/10 text-warning border-warning/30" : "bg-info/10 text-info border-info/30")}>{o.type}</span>
+          {OCCURRENCES.slice(0, 5).map((o, i) => (
+            <div 
+              key={o.id} 
+              className="px-4 py-2.5 row-animate flex items-center gap-3 animate-fade-in-right"
+              style={{ animationDelay: `${i * 70}ms` }}
+            >
+              <span className={cn(
+                "chip text-[10px] transition-all duration-200 hover:scale-105", 
+                o.severity === "high" ? "bg-destructive/10 text-destructive border-destructive/30 badge-pulse" : 
+                o.severity === "medium" ? "bg-warning/10 text-warning border-warning/30" : 
+                "bg-info/10 text-info border-info/30"
+              )}>{o.type}</span>
               <div className="text-xs font-mono text-muted-foreground w-20">{o.order}</div>
               <div className="text-xs flex-1 truncate">{o.client} — <span className="text-muted-foreground">{o.reason}</span></div>
               <div className="text-[11px] text-muted-foreground">{o.evidence}</div>

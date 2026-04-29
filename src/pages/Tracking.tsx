@@ -56,25 +56,33 @@ export default function Tracking() {
               { x: 520, y: 200, label: "Parada 2 · Pinheiros", current: true },
               { x: 760, y: 120, label: "Parada 3 · Vila Madalena", done: false },
             ].map((s, i) => (
-              <div key={i} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: s.x, top: s.y }}>
-                <div className={`h-4 w-4 rounded-full border-2 ${s.current ? "bg-primary border-primary-glow shadow-glow animate-pulse" : s.done ? "bg-success border-success" : "bg-surface-3 border-border"}`}/>
-                <div className="mt-1 text-[10px] font-semibold whitespace-nowrap bg-surface-2/90 backdrop-blur px-1.5 py-0.5 rounded border border-border">{s.label}</div>
+              <div 
+                key={i} 
+                className="absolute -translate-x-1/2 -translate-y-1/2 animate-fade-in-up hover-scale cursor-pointer" 
+                style={{ left: s.x, top: s.y, animationDelay: `${i * 150}ms` }}
+              >
+                <div className={`h-4 w-4 rounded-full border-2 transition-all duration-300 ${s.current ? "bg-primary border-primary-glow shadow-glow animate-pulse-glow" : s.done ? "bg-success border-success" : "bg-surface-3 border-border"}`}/>
+                <div className="mt-1 text-[10px] font-semibold whitespace-nowrap bg-surface-2/90 backdrop-blur px-1.5 py-0.5 rounded border border-border transition-all duration-300 hover:border-primary/30">{s.label}</div>
               </div>
             ))}
             {/* Driver pin */}
-            <div className="absolute" style={{ left: 520, top: 200 }}>
-              <div className="absolute -translate-x-1/2 -translate-y-full -mt-4 bg-primary text-primary-foreground rounded-md px-2 py-1 text-[10px] font-semibold shadow-glow flex items-center gap-1">
-                <Truck className="h-3 w-3"/> {order.driver}
+            <div className="absolute animate-float" style={{ left: 520, top: 200 }}>
+              <div className="absolute -translate-x-1/2 -translate-y-full -mt-4 bg-primary text-primary-foreground rounded-md px-2 py-1 text-[10px] font-semibold shadow-glow flex items-center gap-1 animate-pulse-glow hover-scale cursor-pointer">
+                <Truck className="h-3 w-3 animate-subtle-bounce"/> {order.driver}
               </div>
             </div>
           </div>
           <div className="grid grid-cols-4 border-t border-border text-xs">
             {[
               ["Distância","187 km"], ["Paradas","12 / 14"], ["Velocidade","58 km/h"], ["Último ping","há 14 seg"],
-            ].map(([l,v]) => (
-              <div key={l} className="p-3 border-r border-border last:border-0">
+            ].map(([l,v], i) => (
+              <div 
+                key={l} 
+                className="p-3 border-r border-border last:border-0 hover:bg-accent/30 transition-all duration-300 cursor-pointer animate-fade-in-up"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
                 <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{l}</div>
-                <div className="font-semibold mt-0.5 tnum">{v}</div>
+                <div className="font-semibold mt-0.5 tnum number-animate" style={{ animationDelay: `${i * 80 + 100}ms` }}>{v}</div>
               </div>
             ))}
           </div>
@@ -82,34 +90,38 @@ export default function Tracking() {
 
         {/* Timeline + details */}
         <div className="col-span-12 xl:col-span-4 space-y-4">
-          <div className="panel p-4">
+          <div className="panel p-4 card-interactive animate-fade-in-right" style={{ animationDelay: '100ms' }}>
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-md bg-gradient-primary grid place-items-center text-primary-foreground font-bold">{order.driver?.split(" ").map(s=>s[0]).join("")}</div>
-              <div className="flex-1">
+              <div className="h-10 w-10 rounded-md bg-gradient-primary grid place-items-center text-primary-foreground font-bold hover-scale cursor-pointer animate-pulse-glow">{order.driver?.split(" ").map(s=>s[0]).join("")}</div>
+              <div className="flex-1 animate-fade-in-left" style={{ animationDelay: '200ms' }}>
                 <div className="text-sm font-semibold">{order.driver}</div>
                 <div className="text-[11px] text-muted-foreground">VUC MNT-4A12 · ⭐ 4,9 · 42 viagens/30d</div>
               </div>
             </div>
-            <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+            <div className="mt-3 grid grid-cols-2 gap-2 text-xs stagger-children">
               <div><div className="text-[10px] text-muted-foreground">SLA</div><SlaBadge sla={order.sla}/></div>
               <div><div className="text-[10px] text-muted-foreground">Status</div><StatusBadge status={order.status}/></div>
             </div>
           </div>
 
-          <div className="panel">
-            <div className="panel-header"><div className="text-sm font-semibold flex items-center gap-2"><Clock className="h-3.5 w-3.5"/> Linha do tempo</div></div>
+          <div className="panel animate-fade-in-right" style={{ animationDelay: '200ms' }}>
+            <div className="panel-header"><div className="text-sm font-semibold flex items-center gap-2"><Clock className="h-3.5 w-3.5 animate-subtle-bounce"/> Linha do tempo</div></div>
             <ol className="p-4 space-y-3">
               {timeline.map((e, i) => (
-                <li key={i} className="flex gap-3 relative">
-                  {i < timeline.length - 1 && <div className="absolute left-3 top-6 bottom-[-12px] w-px bg-border"/>}
-                  <div className={`h-6 w-6 shrink-0 rounded-full grid place-items-center border-2 ${
-                    e.current ? "bg-primary border-primary-glow shadow-glow" :
+                <li 
+                  key={i} 
+                  className="flex gap-3 relative animate-fade-in-left group"
+                  style={{ animationDelay: `${i * 80}ms` }}
+                >
+                  {i < timeline.length - 1 && <div className="absolute left-3 top-6 bottom-[-12px] w-px bg-border transition-colors duration-300 group-hover:bg-primary/30"/>}
+                  <div className={`h-6 w-6 shrink-0 rounded-full grid place-items-center border-2 transition-all duration-300 group-hover:scale-110 ${
+                    e.current ? "bg-primary border-primary-glow shadow-glow animate-pulse-glow" :
                     e.done ? "bg-success/15 border-success text-success" : "bg-surface-2 border-border text-muted-foreground"
                   }`}>
                     <e.icon className="h-3 w-3"/>
                   </div>
                   <div className="flex-1 pb-1">
-                    <div className={`text-xs font-semibold ${!e.done && "text-muted-foreground"}`}>{e.t}</div>
+                    <div className={`text-xs font-semibold transition-colors duration-200 ${!e.done ? "text-muted-foreground" : "group-hover:text-primary"}`}>{e.t}</div>
                     <div className="text-[10px] text-muted-foreground">{e.time} · {e.by}</div>
                   </div>
                 </li>

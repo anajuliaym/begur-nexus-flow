@@ -16,16 +16,20 @@ export default function Occurrences() {
         actions={<><Filters items={["Todas","Recusa","Atraso","Avaria","Endereço","Reentrega","Equipamento"]}/><Btn variant="primary"><AlertTriangle className="h-3 w-3"/> Nova ocorrência</Btn></>}
       />
 
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-4 gap-3 stagger-children">
         {[
           { l: "Em aberto", v: 23, t: "destructive" },
           { l: "Em revisão", v: 11, t: "warning" },
           { l: "Tempo médio de resolução", v: "2h 14min", t: "info" },
           { l: "Resolvidas (24h)", v: 184, t: "success" },
-        ].map(s => (
-          <div key={s.l} className="panel p-4">
+        ].map((s, i) => (
+          <div 
+            key={s.l} 
+            className="panel p-4 card-interactive"
+            style={{ animationDelay: `${i * 80}ms` }}
+          >
             <div className="stat-label">{s.l}</div>
-            <div className="stat-value mt-1.5" style={{ color: `hsl(var(--${s.t}))` }}>{s.v}</div>
+            <div className="stat-value mt-1.5 number-animate" style={{ color: `hsl(var(--${s.t}))`, animationDelay: `${i * 80 + 200}ms` }}>{s.v}</div>
           </div>
         ))}
       </div>
@@ -37,20 +41,31 @@ export default function Occurrences() {
             <span className="chip border-border text-muted-foreground">{OCCURRENCES.length}</span>
           </div>
           <div className="divide-y divide-border max-h-[640px] overflow-y-auto">
-            {OCCURRENCES.map(o => {
+            {OCCURRENCES.map((o, i) => {
               const sevTone = o.severity === "high" ? "destructive" : o.severity === "medium" ? "warning" : "muted-foreground";
               return (
-                <button key={o.id} onClick={() => setSel(o)} className={cn(
-                  "w-full text-left p-3.5 hover:bg-accent/40 transition flex gap-3",
-                  sel.id === o.id && "bg-accent/60 border-l-2 border-l-primary"
-                )}>
-                  <div className="h-8 w-8 shrink-0 rounded-md grid place-items-center" style={{ background: `hsl(var(--${sevTone}) / 0.15)`, color: `hsl(var(--${sevTone}))` }}>
-                    <AlertTriangle className="h-4 w-4"/>
+                <button 
+                  key={o.id} 
+                  onClick={() => setSel(o)} 
+                  className={cn(
+                    "w-full text-left p-3.5 hover:bg-accent/40 transition-all duration-200 flex gap-3 animate-fade-in-left btn-press",
+                    sel.id === o.id && "bg-accent/60 border-l-2 border-l-primary"
+                  )}
+                  style={{ animationDelay: `${i * 40}ms` }}
+                >
+                  <div 
+                    className={cn(
+                      "h-8 w-8 shrink-0 rounded-md grid place-items-center transition-all duration-300",
+                      sel.id === o.id && "scale-110"
+                    )} 
+                    style={{ background: `hsl(var(--${sevTone}) / 0.15)`, color: `hsl(var(--${sevTone}))` }}
+                  >
+                    <AlertTriangle className={cn("h-4 w-4", o.severity === "high" && "animate-pulse")}/>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold">{o.type}</span>
-                      <span className="chip text-[10px] border-border text-muted-foreground">{o.client}</span>
+                      <span className="chip text-[10px] border-border text-muted-foreground transition-all duration-200 hover:border-primary/30">{o.client}</span>
                       <span className="ml-auto text-[10px] text-muted-foreground">{o.opened}</span>
                     </div>
                     <div className="text-[11px] text-muted-foreground mt-0.5 truncate">{o.reason}</div>
@@ -79,12 +94,16 @@ export default function Occurrences() {
               <Btn variant="primary"><CheckCircle2 className="h-3 w-3"/> Resolver</Btn>
             </div>
           </div>
-          <div className="p-5 grid grid-cols-2 gap-4">
+          <div className="p-5 grid grid-cols-2 gap-4 stagger-children">
             {[
               ["Severidade", SEV_LABEL[sel.severity] ?? sel.severity], ["Status", sel.status], ["Responsável", sel.owner], ["Aberta em", sel.opened],
               ["Motivo", sel.reason], ["Pedido vinculado", sel.order],
-            ].map(([k,v]) => (
-              <div key={k} className="rounded-md border border-border bg-surface-1 p-3">
+            ].map(([k,v], i) => (
+              <div 
+                key={k} 
+                className="rounded-md border border-border bg-surface-1 p-3 hover-glow transition-all duration-300"
+                style={{ animationDelay: `${i * 60}ms` }}
+              >
                 <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{k}</div>
                 <div className="text-sm font-medium mt-0.5">{v}</div>
               </div>

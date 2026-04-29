@@ -83,10 +83,10 @@ export function AppShell({ children, onAiOpen }: { children: React.ReactNode; on
       {/* Sidebar */}
       <aside className="w-[260px] shrink-0 border-r border-sidebar-border bg-sidebar flex flex-col">
         <div className="h-14 px-4 flex items-center gap-2.5 border-b border-sidebar-border">
-          <div className="h-8 w-8 rounded-md bg-gradient-primary grid place-items-center shadow-glow">
-            <Activity className="h-4 w-4 text-primary-foreground" strokeWidth={2.5} />
+          <div className="h-8 w-8 rounded-md bg-gradient-primary grid place-items-center shadow-glow animate-pulse-glow hover-scale cursor-pointer">
+            <Activity className="h-4 w-4 text-primary-foreground animate-subtle-bounce" strokeWidth={2.5} />
           </div>
-          <div className="flex flex-col leading-tight">
+          <div className="flex flex-col leading-tight animate-fade-in-left" style={{ animationDelay: '100ms' }}>
             <span className="text-sm font-semibold text-foreground tracking-tight">Begur</span>
             <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">OS de Entrega</span>
           </div>
@@ -105,26 +105,26 @@ export function AppShell({ children, onAiOpen }: { children: React.ReactNode; on
                       key={item.to}
                       to={item.to}
                       className={cn(
-                        "group flex items-center gap-2.5 px-2 py-1.5 rounded-md text-[13px] font-medium transition-colors",
+                        "group flex items-center gap-2.5 px-2 py-1.5 rounded-md text-[13px] font-medium nav-item-animate btn-press",
                         active
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-[inset_2px_0_0_hsl(var(--primary))]"
+                          ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-[inset_2px_0_0_hsl(var(--primary))] active"
                           : "text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
                       )}
                     >
-                      <Icon className={cn("h-4 w-4 shrink-0", active ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
+                      <Icon className={cn("h-4 w-4 shrink-0 transition-all duration-300", active ? "text-primary scale-110" : "text-muted-foreground group-hover:text-foreground group-hover:scale-105")} />
                       <span className="flex-1 truncate">{item.label}</span>
                       {item.badge !== undefined && (
                         <span className={cn(
-                          "text-[10px] px-1.5 py-0.5 rounded font-semibold tnum",
+                          "text-[10px] px-1.5 py-0.5 rounded font-semibold tnum transition-all duration-300 group-hover:scale-105",
                           item.badge === "live"
-                            ? "bg-success/15 text-success"
+                            ? "bg-success/15 text-success status-dot-animate"
                             : item.tone === "destructive"
-                            ? "bg-destructive/15 text-destructive"
+                            ? "bg-destructive/15 text-destructive badge-pulse"
                             : item.tone === "warning"
                             ? "bg-warning/15 text-warning"
                             : "bg-surface-3 text-muted-foreground"
                         )}>
-                          {item.badge === "live" ? "● AO VIVO" : (item.badge as number).toLocaleString("pt-BR")}
+                          {item.badge === "live" ? "AO VIVO" : (item.badge as number).toLocaleString("pt-BR")}
                         </span>
                       )}
                     </NavLink>
@@ -139,15 +139,15 @@ export function AppShell({ children, onAiOpen }: { children: React.ReactNode; on
           <button
             onClick={onAiOpen}
             className={cn(
-              "w-full flex items-center gap-2 px-2.5 py-2 rounded-md text-xs font-medium transition",
+              "w-full flex items-center gap-2 px-2.5 py-2 rounded-md text-xs font-medium transition-all duration-300 btn-press",
               mode === "target"
-                ? "bg-gradient-primary text-primary-foreground hover:opacity-90 shadow-glow"
+                ? "bg-gradient-primary text-primary-foreground hover:opacity-90 shadow-glow hover-lift animate-gradient"
                 : "bg-surface-2 text-muted-foreground border border-dashed border-border cursor-not-allowed"
             )}
             disabled={mode === "real"}
             title={mode === "real" ? "Disponível apenas no modo Visão Alvo (precisa de dados padronizados)" : ""}
           >
-            <Sparkles className="h-3.5 w-3.5" />
+            <Sparkles className={cn("h-3.5 w-3.5", mode === "target" && "animate-subtle-bounce")} />
             <span>{mode === "target" ? "Begur Copilot" : "Copilot — bloqueado (Fase 3)"}</span>
             {mode === "target" && <kbd className="ml-auto bg-black/20 px-1 rounded text-[10px]">⌘K</kbd>}
           </button>
@@ -215,9 +215,9 @@ export function AppShell({ children, onAiOpen }: { children: React.ReactNode; on
               </span>
               <span className="text-[11px] font-semibold text-success uppercase tracking-wider">Sistemas online</span>
             </div>
-            <button className="relative h-9 w-9 grid place-items-center rounded-md hover:bg-accent">
-              <Bell className="h-4 w-4" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive" />
+            <button className="relative h-9 w-9 grid place-items-center rounded-md hover:bg-accent btn-press group">
+              <Bell className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12" />
+              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive badge-pulse" />
             </button>
           </div>
         </header>
@@ -239,7 +239,7 @@ export function AppShell({ children, onAiOpen }: { children: React.ReactNode; on
         )}
 
         <main className="flex-1 overflow-auto">
-          <div className="bg-gradient-glow">
+          <div className="bg-gradient-glow page-transition">
             {children}
           </div>
         </main>
