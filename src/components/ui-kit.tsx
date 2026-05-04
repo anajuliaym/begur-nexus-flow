@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { STAGE_META, DeliveryStage } from "@/data/mock";
+import { LucideIcon } from "lucide-react";
 
 export function StageBadge({ stage }: { stage: DeliveryStage }) {
   const meta = STAGE_META[stage];
@@ -15,8 +16,14 @@ export function SlaBadge({ sla }: { sla: "on_track" | "at_risk" | "breached" }) 
   return <span className={cn("chip", map[sla].cls)}>● {map[sla].label}</span>;
 }
 
-export function Kpi({ label, value, tone = "primary", icon: Icon }: any) {
-  const toneCls: any = {
+export function Kpi({ label, value, tone = "primary", icon: Icon, trend }: {
+  label: string;
+  value: number;
+  tone?: "primary" | "success" | "warning" | "destructive" | "info";
+  icon?: LucideIcon;
+  trend?: string;
+}) {
+  const toneCls: Record<string, string> = {
     primary: "text-primary", success: "text-success", warning: "text-warning",
     destructive: "text-destructive", info: "text-info",
   };
@@ -27,6 +34,7 @@ export function Kpi({ label, value, tone = "primary", icon: Icon }: any) {
         {Icon && <Icon className={cn("h-4 w-4", toneCls[tone])} />}
       </div>
       <div className="mt-2 stat-value">{value}</div>
+      {trend && <div className="text-[10px] text-muted-foreground mt-1">{trend}</div>}
     </div>
   );
 }
@@ -44,7 +52,7 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
 }
 
 export function Btn({ children, variant = "default", className, ...p }: any) {
-  const v: any = {
+  const v: Record<string, string> = {
     default: "bg-surface-2 hover:bg-surface-3 border border-border text-foreground",
     primary: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm",
     ghost: "hover:bg-accent text-foreground",
