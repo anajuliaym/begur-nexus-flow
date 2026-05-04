@@ -40,7 +40,7 @@ export default function ClientePortal() {
         {/* Branding header */}
         <div className="flex items-center gap-3 mb-2">
           <div className="h-10 w-10 rounded-xl bg-gradient-primary grid place-items-center">
-            <Activity className="h-5 w-5 text-primary-foreground" />
+            <img src={begurLogo} alt="Begur" className="h-5 brightness-0 invert" />
           </div>
           <div>
             <span className="text-sm font-bold">Begur</span>
@@ -185,7 +185,7 @@ export default function ClientePortal() {
       <div className="max-w-[700px] mx-auto p-6 space-y-6">
         <div className="flex items-center gap-3 mb-2">
           <div className="h-10 w-10 rounded-xl bg-gradient-primary grid place-items-center">
-            <Activity className="h-5 w-5 text-primary-foreground" />
+            <img src={begurLogo} alt="Begur" className="h-5 brightness-0 invert" />
           </div>
           <div>
             <span className="text-sm font-bold">Begur</span>
@@ -252,7 +252,7 @@ export default function ClientePortal() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-xl bg-gradient-primary grid place-items-center">
-            <Activity className="h-5 w-5 text-primary-foreground" />
+            <img src={begurLogo} alt="Begur" className="h-5 brightness-0 invert" />
           </div>
           <div>
             <span className="text-sm font-bold">Begur</span>
