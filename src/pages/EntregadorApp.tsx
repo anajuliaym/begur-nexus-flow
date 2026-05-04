@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DELIVERIES, STAGE_META, DeliveryStage } from "@/data/mock";
 import { 
   Package, MapPin, Clock, CheckCircle2, AlertTriangle, Phone, 
   Camera, Navigation, MessageSquare, Truck, XCircle, ChevronRight,
-  Menu, Bell, User, ChevronUp
+  Menu, Bell, User, ChevronUp, ArrowLeft
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
