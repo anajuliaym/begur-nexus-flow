@@ -2,78 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Begur Control Tower — Enterprise Logistics OS Design System
-   All colors HSL. Tokens only. */
+/* Begur Control Tower — Soft Enterprise Design System
+   Light theme, workflow-oriented, delivery-centric */
 
 @layer base {
   :root {
-    /* Surfaces — deep slate control-tower */
-    --background: 220 26% 8%;
-    --surface-1: 220 24% 11%;
-    --surface-2: 220 22% 14%;
-    --surface-3: 220 20% 17%;
-    --foreground: 210 30% 96%;
+    /* Surfaces — clean light */
+    --background: 210 20% 97%;
+    --surface-1: 0 0% 100%;
+    --surface-2: 210 18% 95%;
+    --surface-3: 210 14% 91%;
+    --foreground: 210 40% 20%;
 
-    --card: 220 24% 11%;
-    --card-foreground: 210 30% 96%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 40% 20%;
 
-    --popover: 220 22% 13%;
-    --popover-foreground: 210 30% 96%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 40% 20%;
 
-    /* Brand — Begur teal/cyan signal */
-    --primary: 188 92% 48%;
-    --primary-foreground: 220 26% 8%;
-    --primary-glow: 188 100% 62%;
+    /* Brand — Begur cyan */
+    --primary: 187 100% 40%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 187 100% 50%;
 
-    --secondary: 220 18% 20%;
-    --secondary-foreground: 210 25% 92%;
+    /* Secondary — deep navy */
+    --secondary: 210 50% 22%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 18% 17%;
-    --muted-foreground: 215 16% 62%;
+    --muted: 210 14% 91%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 220 22% 18%;
-    --accent-foreground: 210 30% 96%;
+    --accent: 210 18% 94%;
+    --accent-foreground: 210 40% 20%;
 
     /* Operational signal colors */
-    --success: 152 70% 45%;
-    --success-foreground: 220 26% 8%;
-    --warning: 38 95% 56%;
-    --warning-foreground: 220 26% 8%;
-    --destructive: 358 80% 60%;
-    --destructive-foreground: 210 30% 96%;
-    --info: 212 92% 60%;
-    --info-foreground: 220 26% 8%;
-    --critical: 340 85% 58%;
+    --success: 152 70% 40%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 95% 50%;
+    --warning-foreground: 210 40% 20%;
+    --destructive: 358 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --info: 212 92% 55%;
+    --info-foreground: 0 0% 100%;
 
-    --border: 220 18% 20%;
-    --input: 220 18% 18%;
-    --ring: 188 92% 48%;
+    --border: 214 20% 88%;
+    --input: 214 20% 88%;
+    --ring: 187 100% 40%;
 
-    --radius: 0.55rem;
+    --radius: 0.75rem;
 
-    /* Sidebar */
-    --sidebar-background: 222 30% 7%;
-    --sidebar-foreground: 215 18% 72%;
-    --sidebar-primary: 188 92% 48%;
-    --sidebar-primary-foreground: 220 26% 8%;
-    --sidebar-accent: 220 22% 13%;
-    --sidebar-accent-foreground: 210 30% 96%;
-    --sidebar-border: 220 22% 14%;
-    --sidebar-ring: 188 92% 48%;
+    /* Sidebar — deep navy */
+    --sidebar-background: 210 50% 15%;
+    --sidebar-foreground: 210 20% 75%;
+    --sidebar-primary: 187 100% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 40% 20%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 210 40% 20%;
+    --sidebar-ring: 187 100% 40%;
 
     /* Gradients & shadows */
-    --gradient-primary: linear-gradient(135deg, hsl(188 92% 48%), hsl(200 95% 55%));
-    --gradient-surface: linear-gradient(180deg, hsl(220 24% 12%), hsl(220 26% 9%));
-    --gradient-glow: radial-gradient(600px circle at 50% 0%, hsl(188 92% 48% / 0.08), transparent 70%);
-    --shadow-elevated: 0 1px 0 hsl(0 0% 100% / 0.04) inset, 0 12px 32px -12px hsl(220 80% 2% / 0.6);
-    --shadow-glow: 0 0 0 1px hsl(188 92% 48% / 0.25), 0 8px 24px -8px hsl(188 92% 48% / 0.35);
-
-    --grid-line: 220 18% 16%;
-  }
-
-  .light {
-    --background: 210 30% 98%;
-    --foreground: 220 26% 12%;
+    --gradient-primary: linear-gradient(135deg, hsl(187 100% 40%), hsl(200 90% 50%));
+    --gradient-surface: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 20% 97%));
+    --gradient-glow: radial-gradient(600px circle at 50% 0%, hsl(187 100% 40% / 0.06), transparent 70%);
+    --shadow-elevated: 0 1px 3px hsl(210 40% 20% / 0.06), 0 4px 12px hsl(210 40% 20% / 0.04);
+    --shadow-glow: 0 0 0 1px hsl(187 100% 40% / 0.2), 0 4px 16px -4px hsl(187 100% 40% / 0.15);
   }
 }
 
@@ -83,36 +76,23 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv02","cv03","cv04","cv11", "ss01", "tnum";
-    background-image:
-      radial-gradient(1200px 600px at 100% -10%, hsl(188 92% 48% / 0.05), transparent 60%),
-      radial-gradient(800px 500px at -10% 100%, hsl(212 92% 60% / 0.04), transparent 60%);
   }
 
-  /* Tabular numbers for data tables */
   .tnum { font-variant-numeric: tabular-nums; }
 
-  /* Subtle grid background */
-  .bg-grid {
-    background-image:
-      linear-gradient(hsl(var(--grid-line) / 0.5) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--grid-line) / 0.5) 1px, transparent 1px);
-    background-size: 32px 32px;
-  }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-track { background: hsl(var(--background)); }
-  ::-webkit-scrollbar-thumb { background: hsl(var(--surface-3)); border-radius: 8px; border: 2px solid hsl(var(--background)); }
-  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.5); }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--muted-foreground) / 0.25); border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.4); }
 }
 
 @layer components {
   .panel {
-    @apply rounded-lg border border-border bg-card;
+    @apply rounded-xl border border-border bg-card;
     box-shadow: var(--shadow-elevated);
   }
   .panel-header {
-    @apply flex items-center justify-between px-4 py-3 border-b border-border;
+    @apply flex items-center justify-between px-5 py-3.5 border-b border-border;
   }
   .stat-label {
     @apply text-[11px] uppercase tracking-wider text-muted-foreground font-medium;
@@ -121,10 +101,25 @@
     @apply text-2xl font-semibold tnum tracking-tight;
   }
   .chip {
-    @apply inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium border;
+    @apply inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium border;
   }
   .row-hover {
     @apply hover:bg-accent/50 transition-colors;
+  }
+  .workflow-step {
+    @apply flex items-center gap-3;
+  }
+  .workflow-step-dot {
+    @apply h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0;
+  }
+  .workflow-step-dot.active {
+    @apply bg-primary text-primary-foreground shadow-glow;
+  }
+  .workflow-step-dot.done {
+    @apply bg-success text-success-foreground;
+  }
+  .workflow-step-dot.pending {
+    @apply bg-muted text-muted-foreground;
   }
   .pulse-dot::before {
     content: "";
@@ -136,10 +131,6 @@
 
 @keyframes ping {
   75%, 100% { transform: scale(2.2); opacity: 0; }
-}
-@keyframes shimmer {
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
 }
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(8px); }
