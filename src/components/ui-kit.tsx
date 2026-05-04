@@ -1,36 +1,32 @@
 import { cn } from "@/lib/utils";
-import { STATUS_META, OrderStatus } from "@/data/mock";
+import { STAGE_META, DeliveryStage } from "@/data/mock";
 
-export function StatusBadge({ status }: { status: OrderStatus }) {
-  const meta = STATUS_META[status];
-  return <span className={cn("chip", meta.tone)}>{meta.label}</span>;
+export function StageBadge({ stage }: { stage: DeliveryStage }) {
+  const meta = STAGE_META[stage];
+  return <span className={cn("chip", meta.color)}>{meta.label}</span>;
 }
 
 export function SlaBadge({ sla }: { sla: "on_track" | "at_risk" | "breached" }) {
   const map = {
-    on_track: { label: "On track", cls: "bg-success/10 text-success border-success/30" },
-    at_risk: { label: "At risk", cls: "bg-warning/10 text-warning border-warning/30" },
-    breached: { label: "Breached", cls: "bg-destructive/10 text-destructive border-destructive/30" },
+    on_track: { label: "No prazo", cls: "bg-success/10 text-success border-success/30" },
+    at_risk: { label: "Em risco", cls: "bg-warning/10 text-warning border-warning/30" },
+    breached: { label: "Atrasado", cls: "bg-destructive/10 text-destructive border-destructive/30" },
   } as const;
   return <span className={cn("chip", map[sla].cls)}>● {map[sla].label}</span>;
 }
 
-export function Kpi({ label, value, delta, tone = "primary", icon: Icon }: any) {
+export function Kpi({ label, value, tone = "primary", icon: Icon }: any) {
   const toneCls: any = {
     primary: "text-primary", success: "text-success", warning: "text-warning",
     destructive: "text-destructive", info: "text-info",
   };
   return (
-    <div className="panel p-4 relative overflow-hidden">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+    <div className="panel p-5">
       <div className="flex items-start justify-between">
         <div className="stat-label">{label}</div>
-        {Icon && <Icon className={cn("h-3.5 w-3.5", toneCls[tone])} />}
+        {Icon && <Icon className={cn("h-4 w-4", toneCls[tone])} />}
       </div>
-      <div className="mt-2 flex items-baseline gap-2">
-        <div className="stat-value">{value}</div>
-        <div className={cn("text-xs font-semibold tnum", toneCls[tone])}>{delta}</div>
-      </div>
+      <div className="mt-2 stat-value">{value}</div>
     </div>
   );
 }
@@ -50,13 +46,13 @@ export function PageHeader({ title, subtitle, actions }: { title: string; subtit
 export function Btn({ children, variant = "default", className, ...p }: any) {
   const v: any = {
     default: "bg-surface-2 hover:bg-surface-3 border border-border text-foreground",
-    primary: "bg-primary text-primary-foreground hover:bg-primary/90",
+    primary: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm",
     ghost: "hover:bg-accent text-foreground",
     outline: "border border-border hover:bg-accent",
     danger: "bg-destructive/15 text-destructive border border-destructive/30 hover:bg-destructive/25",
   };
   return (
-    <button {...p} className={cn("inline-flex items-center gap-1.5 h-8 px-3 rounded-md text-xs font-medium transition", v[variant], className)}>
+    <button {...p} className={cn("inline-flex items-center gap-1.5 h-9 px-4 rounded-xl text-xs font-medium transition", v[variant], className)}>
       {children}
     </button>
   );
@@ -67,9 +63,28 @@ export function Filters({ items }: { items: string[] }) {
     <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
       {items.map((it, i) => (
         <button key={it} className={cn(
-          "px-2.5 h-7 rounded-md text-xs font-medium border whitespace-nowrap transition",
+          "px-3 h-8 rounded-xl text-xs font-medium border whitespace-nowrap transition",
           i === 0 ? "bg-primary/15 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground hover:bg-accent"
         )}>{it}</button>
+      ))}
+    </div>
+  );
+}
+
+export function WorkflowSteps({ current, stages }: { current: number; stages: string[] }) {
+  return (
+    <div className="flex items-center gap-2">
+      {stages.map((s, i) => (
+        <div key={s} className="flex items-center gap-2">
+          <div className={cn(
+            "workflow-step-dot",
+            i < current ? "done" : i === current ? "active" : "pending"
+          )}>
+            {i < current ? "✓" : i + 1}
+          </div>
+          <span className={cn("text-xs font-medium", i <= current ? "text-foreground" : "text-muted-foreground")}>{s}</span>
+          {i < stages.length - 1 && <div className={cn("w-8 h-px", i < current ? "bg-success" : "bg-border")} />}
+        </div>
       ))}
     </div>
   );
