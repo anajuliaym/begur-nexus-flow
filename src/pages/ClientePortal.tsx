@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DELIVERIES, STAGE_META, DeliveryStage, TYPE_LABELS } from "@/data/mock";
 import { 
   Package, MapPin, Clock, CheckCircle2, Search, Truck,
@@ -23,6 +24,7 @@ const TRACKING_STEPS = [
 ];
 
 export default function ClientePortal() {
+  const navigate = useNavigate();
   const [view, setView] = useState<PortalView>("dashboard");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -260,6 +262,9 @@ export default function ClientePortal() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <button onClick={() => navigate("/")} className="h-8 px-3 rounded-xl border border-border text-xs font-medium hover:bg-accent transition flex items-center gap-1.5">
+            <ArrowLeft className="h-3.5 w-3.5" /> Mesa do Analista
+          </button>
           <div className="flex items-center gap-2 text-sm">
             <div className="h-8 w-8 rounded-xl bg-primary/10 grid place-items-center text-[11px] font-bold text-primary">HK</div>
             <span className="font-medium">{CLIENT_NAME}</span>

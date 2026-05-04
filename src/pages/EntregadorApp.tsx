@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DELIVERIES, STAGE_META, DeliveryStage } from "@/data/mock";
 import { 
   Package, MapPin, Clock, CheckCircle2, AlertTriangle, Phone, 
   Camera, Navigation, MessageSquare, Truck, XCircle, ChevronRight,
-  Menu, Bell, User, ChevronUp
+  Menu, Bell, User, ChevronUp, ArrowLeft
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +14,7 @@ const driverDeliveries = DELIVERIES.filter(d => d.driver === "Carlos Mendes" && 
   .concat(DELIVERIES.filter(d => d.driver === "Carlos Mendes" && d.stage === "preparacao").slice(0, 2));
 
 export default function EntregadorApp() {
+  const navigate = useNavigate();
   const [view, setView] = useState<DriverView>("list");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [completedStops, setCompletedStops] = useState<Set<string>>(new Set());
@@ -176,7 +178,9 @@ export default function EntregadorApp() {
       {/* Mobile header */}
       <div className="bg-gradient-primary px-5 pt-12 pb-6">
         <div className="flex items-center justify-between mb-4">
-          <Menu className="h-5 w-5 text-primary-foreground/70" />
+          <button onClick={() => navigate("/")} className="flex items-center gap-1.5 text-primary-foreground/80 hover:text-primary-foreground transition text-xs font-medium">
+            <ArrowLeft className="h-4 w-4" /> Mesa do Analista
+          </button>
           <div className="relative">
             <Bell className="h-5 w-5 text-primary-foreground/70" />
             <span className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-destructive text-[8px] font-bold text-destructive-foreground grid place-items-center">2</span>
