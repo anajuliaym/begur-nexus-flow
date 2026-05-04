@@ -1,6 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Briefcase, Package, AlertTriangle, BarChart3, Bell, Search, ChevronRight, Activity, Inbox } from "lucide-react";
+import { Briefcase, Package, AlertTriangle, BarChart3, Bell, Search, ChevronRight, Activity, Inbox, Sparkles, Smartphone, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 
 const NAV = [
   { to: "/", label: "Operação", icon: Briefcase, description: "Mesa do Analista" },
@@ -10,9 +11,25 @@ const NAV = [
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
 ];
 
+const EXTERNAL_VIEWS = [
+  { to: "/entregador", label: "App Entregador", icon: Smartphone },
+  { to: "/portal", label: "Portal Cliente", icon: Globe },
+];
+
 export function AppShell({ children, onAiOpen }: { children: React.ReactNode; onAiOpen: () => void }) {
   const { pathname } = useLocation();
   const current = NAV.find(n => pathname === n.to || (n.to !== "/" && pathname.startsWith(n.to))) ?? NAV[0];
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        onAiOpen();
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [onAiOpen]);
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
@@ -28,7 +45,7 @@ export function AppShell({ children, onAiOpen }: { children: React.ReactNode; on
           </div>
         </div>
 
-        <div className="px-3 pt-5 flex-1">
+        <div className="px-3 pt-5 flex-1 flex flex-col">
           <nav className="space-y-1">
             {NAV.map(item => {
               const active = pathname === item.to || (item.to !== "/" && pathname.startsWith(item.to));
@@ -60,6 +77,41 @@ export function AppShell({ children, onAiOpen }: { children: React.ReactNode; on
               );
             })}
           </nav>
+
+          {/* Separator */}
+          <div className="mt-5 mb-3 px-3">
+            <div className="h-px bg-sidebar-border" />
+            <span className="text-[9px] uppercase tracking-widest text-sidebar-foreground/50 mt-3 block">Visualizações</span>
+          </div>
+          <nav className="space-y-1">
+            {EXTERNAL_VIEWS.map(item => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className="group flex items-center gap-3 px-3 py-2 rounded-xl text-[12px] font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent/40 hover:text-white transition"
+                >
+                  <Icon className="h-4 w-4 shrink-0 text-sidebar-foreground/50 group-hover:text-white" />
+                  <span className="truncate">{item.label}</span>
+                </NavLink>
+              );
+            })}
+          </nav>
+
+          <div className="flex-1" />
+
+          {/* Copilot button */}
+          <div className="px-0 pb-3">
+            <button
+              onClick={onAiOpen}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-sidebar-foreground hover:bg-sidebar-primary/15 hover:text-white transition group"
+            >
+              <Sparkles className="h-4.5 w-4.5 shrink-0 text-sidebar-primary group-hover:text-sidebar-primary" />
+              <span className="flex-1 text-left">Begur Copilot</span>
+              <kbd className="text-[9px] px-1.5 py-0.5 rounded-md bg-sidebar-accent/50 text-sidebar-foreground/60 font-mono">⌘K</kbd>
+            </button>
+          </div>
         </div>
 
         <div className="p-3 border-t border-sidebar-border">
