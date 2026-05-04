@@ -118,9 +118,10 @@ const cities: [string, string][] = [
 ];
 
 const equip = [
-  "Cerveja Heineken 600ml (cx)", "Sorvete Froneri 2L", "Freezer Metalfrio VF55", "Suco Natural One 900ml",
-  "Gelato Bacio 500ml", "Empanado Seara 400g", "Nescafé Dolce Gusto cx", "Refrigerador Solar 440L",
-  "Kibon Magnum cx", "Água de Coco 3L cx", "Pizza Seara Congelada", "Cooler Metalfrio CL200",
+  "Freezer Metalfrio VF55", "Freezer Horizontal Metalfrio DA420", "Refrigerador Vertical Metalfrio VB28",
+  "Cooler Metalfrio CL200", "Freezer Expositor Metalfrio VF50F", "Geladeira Comercial Metalfrio VN44",
+  "Cervejeira Metalfrio VN50", "Freezer Ilha Metalfrio NF40", "Refrigerador Solar 440L",
+  "Expositor Refrigerado Froneri EF300", "Freezer Vertical Nestlé FV120", "Ilha Refrigerada Solar IR200",
 ];
 
 const drivers = [
@@ -211,21 +212,21 @@ export const SERVICE_REQUESTS: ServiceRequest[] = [
     channel: "email",
     status: "pendente",
     client: "Heineken",
-    subject: "Solicitação de coleta urgente — Lote 4421",
-    preview: "Prezados, precisamos agendar a coleta de 120 caixas de Heineken 600ml no CD Jacareí…",
+    subject: "Solicitação de coleta urgente — 15 freezers Lote 4421",
+    preview: "Prezados, precisamos agendar a coleta de 15 freezers expositores no CD Jacareí…",
     fullBody: `Prezados,
 
-Precisamos agendar a coleta de 120 caixas de Heineken 600ml no CD Jacareí para amanhã, 05/05.
+Precisamos agendar a coleta de 15 freezers expositores no CD Jacareí para amanhã, 05/05.
 
 Detalhes:
-- Produto: Cerveja Heineken 600ml (cx 12un)
-- Quantidade: 120 caixas
+- Equipamento: Freezer Expositor Metalfrio VF50F
+- Quantidade: 15 unidades
 - Local de coleta: CD Jacareí — Rod. Presidente Dutra, km 160
 - Janela: 08:00 às 12:00
 - Destino: CD Begur Barueri
 - Contato local: Fernando Alves (11) 99887-2233
 
-Favor confirmar disponibilidade.
+Favor confirmar disponibilidade de veículo com plataforma elevatória.
 
 Atenciosamente,
 Marina Costa
@@ -233,7 +234,7 @@ Coord. Logística — Heineken Brasil`,
     senderName: "Marina Costa",
     senderEmail: "marina.costa@heineken.com.br",
     receivedAt: "há 15 min",
-    items: [{ name: "Cerveja Heineken 600ml (cx)", qty: 120 }],
+    items: [{ name: "Freezer Expositor Metalfrio VF50F", qty: 15 }],
     destination: "CD Begur — Barueri/SP",
   },
   {
@@ -241,14 +242,14 @@ Coord. Logística — Heineken Brasil`,
     channel: "whatsapp",
     status: "pendente",
     client: "Bacio di Latte",
-    subject: "Reposição loja Jardins — gelatos",
-    preview: "Oi Begur! Preciso de reposição pra loja Jardins. 30 caixas de gelato sortido…",
-    fullBody: `Oi Begur! Preciso de reposição pra loja Jardins.
+    subject: "Reposição freezers loja Jardins",
+    preview: "Oi Begur! Preciso de 3 freezers pra loja Jardins. 2 expositores verticais e 1 ilha…",
+    fullBody: `Oi Begur! Preciso de reposição de freezers pra loja Jardins.
 
-30 caixas de gelato sortido (500ml)
-15 caixas de picolé premium
+2 Expositores Refrigerados Froneri EF300
+1 Freezer Ilha Metalfrio NF40
 
-Entregar amanhã de manhã, até 10h.
+Entregar amanhã de manhã, até 10h. Precisa de instalação no local.
 
 Endereço: Rua Oscar Freire, 890 — Jardins/SP
 Contato: Juliana (loja) — (11) 98765-1234
@@ -258,7 +259,7 @@ Camila Ferreira — Bacio di Latte`,
     senderName: "Camila Ferreira",
     senderEmail: "camila@baciodilatte.com.br",
     receivedAt: "há 25 min",
-    items: [{ name: "Gelato Bacio 500ml", qty: 30 }, { name: "Picolé Premium cx", qty: 15 }],
+    items: [{ name: "Expositor Refrigerado Froneri EF300", qty: 2 }, { name: "Freezer Ilha Metalfrio NF40", qty: 1 }],
     destination: "Rua Oscar Freire, 890 — São Paulo/SP",
   },
   {
@@ -266,29 +267,29 @@ Camila Ferreira — Bacio di Latte`,
     channel: "email",
     status: "em_analise",
     client: "Seara",
-    subject: "Entrega programada — Empanados congelados",
-    preview: "Conforme contrato mensal, segue pedido de 200 caixas de empanado Seara 400g…",
-    fullBody: `Conforme contrato mensal, segue pedido de 200 caixas de empanado Seara 400g para distribuição em 5 pontos na Grande SP.
+    subject: "Entrega programada — Freezers horizontais para PDVs",
+    preview: "Conforme contrato mensal, segue pedido de 20 freezers horizontais DA420 para distribuição…",
+    fullBody: `Conforme contrato mensal, segue pedido de 20 freezers horizontais Metalfrio DA420 para distribuição em 5 pontos na Grande SP.
 
 Pedido: PED-88431
 Data de entrega: 06/05/2026
-Temperatura: -18°C (congelado)
+Equipamento: Freezer Horizontal Metalfrio DA420
 
 Pontos de entrega:
-1. Atacadão Osasco — 50cx
-2. Assaí Guarulhos — 40cx
-3. Makro Santo André — 35cx
-4. Atacadão Campinas — 45cx
-5. Assaí Sorocaba — 30cx
+1. Atacadão Osasco — 5 un
+2. Assaí Guarulhos — 4 un
+3. Makro Santo André — 3 un
+4. Atacadão Campinas — 5 un
+5. Assaí Sorocaba — 3 un
 
-Favor confirmar agendamento e veículos refrigerados disponíveis.
+Favor confirmar agendamento e veículos com plataforma.
 
 Ricardo Mendes
-Gestão de Pedidos — Seara/JBS`,
+Gestão de Equipamentos — Seara/JBS`,
     senderName: "Ricardo Mendes",
     senderEmail: "ricardo.mendes@seara.com.br",
     receivedAt: "há 1h",
-    items: [{ name: "Empanado Seara 400g", qty: 200 }],
+    items: [{ name: "Freezer Horizontal Metalfrio DA420", qty: 20 }],
     destination: "Múltiplos pontos — Grande SP",
   },
   {
@@ -296,13 +297,13 @@ Gestão de Pedidos — Seara/JBS`,
     channel: "email",
     status: "convertida",
     client: "Nestlé",
-    subject: "RE: Transferência Nescafé — CD Cajamar → CD Begur",
-    preview: "Confirmamos o envio de 80 caixas Nescafé Dolce Gusto para transferência…",
-    fullBody: `Confirmamos o envio de 80 caixas Nescafé Dolce Gusto para transferência do CD Cajamar para CD Begur.
+    subject: "RE: Transferência freezers verticais — CD Cajamar → CD Begur",
+    preview: "Confirmamos o envio de 8 freezers verticais Nestlé FV120 para transferência…",
+    fullBody: `Confirmamos o envio de 8 freezers verticais Nestlé FV120 para transferência do CD Cajamar para CD Begur.
 
 NF: 44521
-Peso total: 960kg
-Paletizado: Sim (4 pallets)
+Peso total: 1.200kg
+Paletizado: Não (equipamentos individuais com embalagem protetora)
 Saída prevista: 05/05 às 14:00
 
 Att,
@@ -311,7 +312,7 @@ Supply Chain — Nestlé Brasil`,
     senderName: "Paulo Barros",
     senderEmail: "paulo.barros@nestle.com.br",
     receivedAt: "há 2h",
-    items: [{ name: "Nescafé Dolce Gusto cx", qty: 80 }],
+    items: [{ name: "Freezer Vertical Nestlé FV120", qty: 8 }],
     destination: "CD Begur — Barueri/SP",
     convertedTo: "BGR-0132",
   },
@@ -320,22 +321,22 @@ Supply Chain — Nestlé Brasil`,
     channel: "api",
     status: "pendente",
     client: "Natural One",
-    subject: "Pedido automático — Suco 900ml (lote semanal)",
-    preview: "Pedido gerado automaticamente via integração. 150 caixas Suco Natural One 900ml…",
+    subject: "Pedido automático — Refrigeradores para PDVs (lote semanal)",
+    preview: "Pedido gerado automaticamente via integração. 12 refrigeradores verticais VB28…",
     fullBody: `[Pedido automático via API — Natural One]
 
 Pedido: AUTO-7832
-Produto: Suco Natural One 900ml (Laranja, Uva, Limonada)
-Quantidade: 150 caixas (50 de cada sabor)
+Equipamento: Refrigerador Vertical Metalfrio VB28
+Quantidade: 12 unidades
 Destino: CD Atacadão Interlagos
 Prazo: D+2
-Temperatura: Refrigerado (2-8°C)
+Observação: Equipamentos para campanha promocional em PDVs
 
 Gerado em: 05/05/2026 07:45:00`,
     senderName: "Sistema Natural One",
     senderEmail: "api@naturalone.com.br",
     receivedAt: "há 3h",
-    items: [{ name: "Suco Natural One 900ml", qty: 150 }],
+    items: [{ name: "Refrigerador Vertical Metalfrio VB28", qty: 12 }],
     destination: "CD Atacadão Interlagos — São Paulo/SP",
   },
   {
@@ -364,14 +365,14 @@ Thiago Nunes — Metalfrio Operações T1`,
     channel: "email",
     status: "recusada",
     client: "Solar",
-    subject: "Cotação para rota Fortaleza-Teresina",
-    preview: "Gostaríamos de cotar uma rota fixa semanal Fortaleza-Teresina para distribuição…",
-    fullBody: `Gostaríamos de cotar uma rota fixa semanal Fortaleza-Teresina para distribuição de refrigerantes.
+    subject: "Cotação para rota Fortaleza-Teresina — Ilhas refrigeradas",
+    preview: "Gostaríamos de cotar uma rota fixa semanal Fortaleza-Teresina para distribuição de ilhas refrigeradas…",
+    fullBody: `Gostaríamos de cotar uma rota fixa semanal Fortaleza-Teresina para distribuição de ilhas refrigeradas.
 
-Volume estimado: 3 carretas/semana
+Volume estimado: 30 ilhas/semana
 Rota: Fortaleza/CE → Teresina/PI (aprox. 630km)
-Produto: Refrigerantes diversos (Coca-Cola, Fanta, Sprite)
-Temperatura: Ambiente
+Equipamento: Ilha Refrigerada Solar IR200
+Peso unitário: 85kg
 
 Aguardamos proposta comercial.
 
@@ -380,7 +381,7 @@ Diretora de Logística — Solar Br`,
     senderName: "Fernanda Lima",
     senderEmail: "fernanda.lima@solar.com.br",
     receivedAt: "há 6h",
-    items: [{ name: "Refrigerador Solar 440L", qty: 3 }],
+    items: [{ name: "Ilha Refrigerada Solar IR200", qty: 30 }],
     destination: "Teresina/PI",
     notes: "Fora do escopo operacional atual — encaminhado ao comercial",
   },
@@ -389,19 +390,18 @@ Diretora de Logística — Solar Br`,
     channel: "manual",
     status: "convertida",
     client: "Froneri",
-    subject: "Cadastro manual — Reentrega sorvetes devolvidos",
-    preview: "Reentrega de 45 caixas de sorvete Froneri 2L devolvidas por avaria na embalagem…",
+    subject: "Cadastro manual — Reentrega expositor danificado",
+    preview: "Reentrega de 2 expositores refrigerados Froneri EF300 devolvidos por avaria no transporte…",
     fullBody: `Cadastro manual pelo analista.
 
-Motivo: Reentrega de 45 caixas de sorvete Froneri 2L devolvidas por avaria na embalagem externa.
+Motivo: Reentrega de 2 expositores refrigerados Froneri EF300 devolvidos por avaria no transporte.
 Cliente destino: Supermercado Pão de Açúcar — Moema/SP
 Prazo: Mesmo dia
-Temperatura: -18°C (congelado)
-Observação: Embalagens substituídas no CD. Produto OK para venda.`,
+Observação: Equipamentos revisados e testados no CD. Funcionamento OK.`,
     senderName: "Renata Moura (Analista)",
     senderEmail: "renata.moura@begur.com.br",
     receivedAt: "há 8h",
-    items: [{ name: "Sorvete Froneri 2L", qty: 45 }],
+    items: [{ name: "Expositor Refrigerado Froneri EF300", qty: 2 }],
     destination: "Pão de Açúcar Moema — São Paulo/SP",
     convertedTo: "BGR-0128",
   },
@@ -461,14 +461,14 @@ export const ANALYSTS: AnalystData[] = [
 ];
 
 export const CUSTOMERS = [
-  { name: "3L", segment: "Bebidas", orders30: 187, otif: 96.2, sla: "12h", contact: "logistica@3l.com.br" },
-  { name: "Bacio di Latte", segment: "Gelatos/Sorvetes", orders30: 312, otif: 98.5, sla: "4h", contact: "ops@baciodilatte.com.br" },
-  { name: "Froneri", segment: "Sorvetes/Congelados", orders30: 298, otif: 97.1, sla: "6h", contact: "supply@froneri.com.br" },
-  { name: "Heineken", segment: "Bebidas", orders30: 521, otif: 98.8, sla: "6h", contact: "logistica@heineken.com.br" },
+  { name: "3L", segment: "Refrigeração Comercial", orders30: 187, otif: 96.2, sla: "12h", contact: "logistica@3l.com.br" },
+  { name: "Bacio di Latte", segment: "Freezers/Expositores", orders30: 312, otif: 98.5, sla: "4h", contact: "ops@baciodilatte.com.br" },
+  { name: "Froneri", segment: "Expositores Refrigerados", orders30: 298, otif: 97.1, sla: "6h", contact: "supply@froneri.com.br" },
+  { name: "Heineken", segment: "Cervejeiras/Freezers", orders30: 521, otif: 98.8, sla: "6h", contact: "logistica@heineken.com.br" },
   { name: "Metalfrio T1", segment: "Equipamentos Refrigerados", orders30: 145, otif: 94.5, sla: "24h", contact: "operacoes.t1@metalfrio.com.br" },
   { name: "Metalfrio T2", segment: "Equipamentos Refrigerados", orders30: 98, otif: 95.0, sla: "24h", contact: "operacoes.t2@metalfrio.com.br" },
-  { name: "Natural One", segment: "Sucos/Bebidas", orders30: 267, otif: 97.8, sla: "Mesmo dia", contact: "entregas@naturalone.com.br" },
-  { name: "Nestlé", segment: "Alimentos/Bebidas", orders30: 412, otif: 99.0, sla: "8h", contact: "supply.chain@nestle.com.br" },
-  { name: "Seara", segment: "Alimentos Congelados", orders30: 378, otif: 96.4, sla: "12h", contact: "logistica@seara.com.br" },
-  { name: "Solar", segment: "Bebidas/Distribuição", orders30: 445, otif: 97.3, sla: "12h", contact: "distribuicao@solar.com.br" },
+  { name: "Natural One", segment: "Refrigeradores PDV", orders30: 267, otif: 97.8, sla: "Mesmo dia", contact: "entregas@naturalone.com.br" },
+  { name: "Nestlé", segment: "Freezers Verticais", orders30: 412, otif: 99.0, sla: "8h", contact: "supply.chain@nestle.com.br" },
+  { name: "Seara", segment: "Freezers Horizontais", orders30: 378, otif: 96.4, sla: "12h", contact: "logistica@seara.com.br" },
+  { name: "Solar", segment: "Ilhas Refrigeradas", orders30: 445, otif: 97.3, sla: "12h", contact: "distribuicao@solar.com.br" },
 ];
