@@ -1,9 +1,10 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Briefcase, Package, AlertTriangle, BarChart3, Bell, Search, ChevronRight, Activity } from "lucide-react";
+import { Briefcase, Package, AlertTriangle, BarChart3, Bell, Search, ChevronRight, Activity, Inbox } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { to: "/", label: "Operação", icon: Briefcase, description: "Mesa do Analista" },
+  { to: "/solicitacoes", label: "Solicitações", icon: Inbox, badge: 5 },
   { to: "/entregas", label: "Entregas", icon: Package, badge: 32 },
   { to: "/ocorrencias", label: "Ocorrências", icon: AlertTriangle, badge: 8, tone: "destructive" as const },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
