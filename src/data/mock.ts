@@ -4,6 +4,8 @@ export type DeliveryStage = "solicitacao" | "preparacao" | "execucao" | "retorno
 export type DeliveryType = "entrega" | "coleta" | "reentrega" | "remessa";
 export type OccurrenceType = "recusa" | "avaria" | "atraso" | "endereco" | "reentrega" | "equipamento";
 export type Severity = "low" | "medium" | "high";
+export type RequestChannel = "email" | "whatsapp" | "manual" | "api";
+export type RequestStatus = "pendente" | "em_analise" | "convertida" | "recusada";
 
 export const STAGE_META: Record<DeliveryStage, { label: string; color: string; order: number }> = {
   solicitacao: { label: "Solicitação", color: "bg-info/15 text-info border-info/30", order: 0 },
@@ -18,6 +20,20 @@ export const TYPE_LABELS: Record<DeliveryType, string> = {
   coleta: "Coleta",
   reentrega: "Reentrega",
   remessa: "Remessa",
+};
+
+export const CHANNEL_META: Record<RequestChannel, { label: string; color: string }> = {
+  email: { label: "E-mail", color: "bg-info/15 text-info border-info/30" },
+  whatsapp: { label: "WhatsApp", color: "bg-success/15 text-success border-success/30" },
+  manual: { label: "Manual", color: "bg-primary/15 text-primary border-primary/30" },
+  api: { label: "API", color: "bg-warning/15 text-warning border-warning/30" },
+};
+
+export const REQUEST_STATUS_META: Record<RequestStatus, { label: string; color: string }> = {
+  pendente: { label: "Pendente", color: "bg-warning/15 text-warning border-warning/30" },
+  em_analise: { label: "Em análise", color: "bg-info/15 text-info border-info/30" },
+  convertida: { label: "Convertida", color: "bg-success/15 text-success border-success/30" },
+  recusada: { label: "Recusada", color: "bg-destructive/15 text-destructive border-destructive/30" },
 };
 
 export interface TimelineEvent {
@@ -36,6 +52,23 @@ export interface Occurrence {
   opened: string;
   status: "aberta" | "em_analise" | "resolvida";
   owner: string;
+}
+
+export interface ServiceRequest {
+  id: string;
+  channel: RequestChannel;
+  status: RequestStatus;
+  client: string;
+  subject: string;
+  preview: string;
+  fullBody: string;
+  senderName: string;
+  senderEmail: string;
+  receivedAt: string;
+  items: { name: string; qty: number }[];
+  destination?: string;
+  notes?: string;
+  convertedTo?: string;
 }
 
 export interface Delivery {
@@ -64,13 +97,18 @@ export interface Delivery {
   feedback?: string;
 }
 
+// Begur's real clients
 const clients = [
-  { name: "Vivo Empresas", contact: "logistica@vivo.com.br" },
-  { name: "Claro NXT", contact: "ops@claro.com.br" },
-  { name: "TIM Live", contact: "delivery@tim.com.br" },
-  { name: "Algar Telecom", contact: "operacoes@algar.com.br" },
-  { name: "Oi Soluções", contact: "compras@oi.com.br" },
-  { name: "Embratel", contact: "supply@embratel.com" },
+  { name: "3L", contact: "logistica@3l.com.br" },
+  { name: "Bacio di Latte", contact: "ops@baciodilatte.com.br" },
+  { name: "Froneri", contact: "supply@froneri.com.br" },
+  { name: "Heineken", contact: "logistica@heineken.com.br" },
+  { name: "Metalfrio T1", contact: "operacoes.t1@metalfrio.com.br" },
+  { name: "Metalfrio T2", contact: "operacoes.t2@metalfrio.com.br" },
+  { name: "Natural One", contact: "entregas@naturalone.com.br" },
+  { name: "Nestlé", contact: "supply.chain@nestle.com.br" },
+  { name: "Seara", contact: "logistica@seara.com.br" },
+  { name: "Solar", contact: "distribuicao@solar.com.br" },
 ];
 
 const cities: [string, string][] = [
@@ -80,8 +118,9 @@ const cities: [string, string][] = [
 ];
 
 const equip = [
-  "ONT Huawei HG8245", "Roteador WiFi 6 AX1800", "Decoder 4K", "Switch 24P PoE",
-  "Modem DOCSIS 3.1", "Repetidor Mesh", "STB Android TV", "ONU Nokia G-140W",
+  "Cerveja Heineken 600ml (cx)", "Sorvete Froneri 2L", "Freezer Metalfrio VF55", "Suco Natural One 900ml",
+  "Gelato Bacio 500ml", "Empanado Seara 400g", "Nescafé Dolce Gusto cx", "Refrigerador Solar 440L",
+  "Kibon Magnum cx", "Água de Coco 3L cx", "Pizza Seara Congelada", "Cooler Metalfrio CL200",
 ];
 
 const drivers = [
@@ -162,6 +201,212 @@ export const DELIVERIES: Delivery[] = Array.from({ length: 32 }).map((_, i) => {
   };
 });
 
+// Service Requests (Solicitações)
+const requestChannels: RequestChannel[] = ["email", "email", "whatsapp", "email", "api", "whatsapp", "email", "manual"];
+const requestStatuses: RequestStatus[] = ["pendente", "pendente", "em_analise", "convertida", "pendente", "em_analise", "recusada", "convertida"];
+
+export const SERVICE_REQUESTS: ServiceRequest[] = [
+  {
+    id: "SOL-0001",
+    channel: "email",
+    status: "pendente",
+    client: "Heineken",
+    subject: "Solicitação de coleta urgente — Lote 4421",
+    preview: "Prezados, precisamos agendar a coleta de 120 caixas de Heineken 600ml no CD Jacareí…",
+    fullBody: `Prezados,
+
+Precisamos agendar a coleta de 120 caixas de Heineken 600ml no CD Jacareí para amanhã, 05/05.
+
+Detalhes:
+- Produto: Cerveja Heineken 600ml (cx 12un)
+- Quantidade: 120 caixas
+- Local de coleta: CD Jacareí — Rod. Presidente Dutra, km 160
+- Janela: 08:00 às 12:00
+- Destino: CD Begur Barueri
+- Contato local: Fernando Alves (11) 99887-2233
+
+Favor confirmar disponibilidade.
+
+Atenciosamente,
+Marina Costa
+Coord. Logística — Heineken Brasil`,
+    senderName: "Marina Costa",
+    senderEmail: "marina.costa@heineken.com.br",
+    receivedAt: "há 15 min",
+    items: [{ name: "Cerveja Heineken 600ml (cx)", qty: 120 }],
+    destination: "CD Begur — Barueri/SP",
+  },
+  {
+    id: "SOL-0002",
+    channel: "whatsapp",
+    status: "pendente",
+    client: "Bacio di Latte",
+    subject: "Reposição loja Jardins — gelatos",
+    preview: "Oi Begur! Preciso de reposição pra loja Jardins. 30 caixas de gelato sortido…",
+    fullBody: `Oi Begur! Preciso de reposição pra loja Jardins.
+
+30 caixas de gelato sortido (500ml)
+15 caixas de picolé premium
+
+Entregar amanhã de manhã, até 10h.
+
+Endereço: Rua Oscar Freire, 890 — Jardins/SP
+Contato: Juliana (loja) — (11) 98765-1234
+
+Obrigada!
+Camila Ferreira — Bacio di Latte`,
+    senderName: "Camila Ferreira",
+    senderEmail: "camila@baciodilatte.com.br",
+    receivedAt: "há 25 min",
+    items: [{ name: "Gelato Bacio 500ml", qty: 30 }, { name: "Picolé Premium cx", qty: 15 }],
+    destination: "Rua Oscar Freire, 890 — São Paulo/SP",
+  },
+  {
+    id: "SOL-0003",
+    channel: "email",
+    status: "em_analise",
+    client: "Seara",
+    subject: "Entrega programada — Empanados congelados",
+    preview: "Conforme contrato mensal, segue pedido de 200 caixas de empanado Seara 400g…",
+    fullBody: `Conforme contrato mensal, segue pedido de 200 caixas de empanado Seara 400g para distribuição em 5 pontos na Grande SP.
+
+Pedido: PED-88431
+Data de entrega: 06/05/2026
+Temperatura: -18°C (congelado)
+
+Pontos de entrega:
+1. Atacadão Osasco — 50cx
+2. Assaí Guarulhos — 40cx
+3. Makro Santo André — 35cx
+4. Atacadão Campinas — 45cx
+5. Assaí Sorocaba — 30cx
+
+Favor confirmar agendamento e veículos refrigerados disponíveis.
+
+Ricardo Mendes
+Gestão de Pedidos — Seara/JBS`,
+    senderName: "Ricardo Mendes",
+    senderEmail: "ricardo.mendes@seara.com.br",
+    receivedAt: "há 1h",
+    items: [{ name: "Empanado Seara 400g", qty: 200 }],
+    destination: "Múltiplos pontos — Grande SP",
+  },
+  {
+    id: "SOL-0004",
+    channel: "email",
+    status: "convertida",
+    client: "Nestlé",
+    subject: "RE: Transferência Nescafé — CD Cajamar → CD Begur",
+    preview: "Confirmamos o envio de 80 caixas Nescafé Dolce Gusto para transferência…",
+    fullBody: `Confirmamos o envio de 80 caixas Nescafé Dolce Gusto para transferência do CD Cajamar para CD Begur.
+
+NF: 44521
+Peso total: 960kg
+Paletizado: Sim (4 pallets)
+Saída prevista: 05/05 às 14:00
+
+Att,
+Paulo Barros
+Supply Chain — Nestlé Brasil`,
+    senderName: "Paulo Barros",
+    senderEmail: "paulo.barros@nestle.com.br",
+    receivedAt: "há 2h",
+    items: [{ name: "Nescafé Dolce Gusto cx", qty: 80 }],
+    destination: "CD Begur — Barueri/SP",
+    convertedTo: "BGR-0132",
+  },
+  {
+    id: "SOL-0005",
+    channel: "api",
+    status: "pendente",
+    client: "Natural One",
+    subject: "Pedido automático — Suco 900ml (lote semanal)",
+    preview: "Pedido gerado automaticamente via integração. 150 caixas Suco Natural One 900ml…",
+    fullBody: `[Pedido automático via API — Natural One]
+
+Pedido: AUTO-7832
+Produto: Suco Natural One 900ml (Laranja, Uva, Limonada)
+Quantidade: 150 caixas (50 de cada sabor)
+Destino: CD Atacadão Interlagos
+Prazo: D+2
+Temperatura: Refrigerado (2-8°C)
+
+Gerado em: 05/05/2026 07:45:00`,
+    senderName: "Sistema Natural One",
+    senderEmail: "api@naturalone.com.br",
+    receivedAt: "há 3h",
+    items: [{ name: "Suco Natural One 900ml", qty: 150 }],
+    destination: "CD Atacadão Interlagos — São Paulo/SP",
+  },
+  {
+    id: "SOL-0006",
+    channel: "whatsapp",
+    status: "em_analise",
+    client: "Metalfrio T1",
+    subject: "Instalação de freezer — cliente novo em Campinas",
+    preview: "Begur, temos uma instalação de freezer VF55 em Campinas. Cliente novo…",
+    fullBody: `Begur, temos uma instalação de freezer VF55 em Campinas. Cliente novo, precisa ser instalado até sexta.
+
+Equipamento: Freezer Metalfrio VF55
+Endereço: Av. Norte Sul, 1200 — Campinas/SP
+Contato: Sr. Alberto — (19) 99876-5432
+Observação: Precisa de 2 ajudantes para descarga
+
+Thiago Nunes — Metalfrio Operações T1`,
+    senderName: "Thiago Nunes",
+    senderEmail: "thiago.nunes@metalfrio.com.br",
+    receivedAt: "há 4h",
+    items: [{ name: "Freezer Metalfrio VF55", qty: 1 }],
+    destination: "Av. Norte Sul, 1200 — Campinas/SP",
+  },
+  {
+    id: "SOL-0007",
+    channel: "email",
+    status: "recusada",
+    client: "Solar",
+    subject: "Cotação para rota Fortaleza-Teresina",
+    preview: "Gostaríamos de cotar uma rota fixa semanal Fortaleza-Teresina para distribuição…",
+    fullBody: `Gostaríamos de cotar uma rota fixa semanal Fortaleza-Teresina para distribuição de refrigerantes.
+
+Volume estimado: 3 carretas/semana
+Rota: Fortaleza/CE → Teresina/PI (aprox. 630km)
+Produto: Refrigerantes diversos (Coca-Cola, Fanta, Sprite)
+Temperatura: Ambiente
+
+Aguardamos proposta comercial.
+
+Fernanda Lima
+Diretora de Logística — Solar Br`,
+    senderName: "Fernanda Lima",
+    senderEmail: "fernanda.lima@solar.com.br",
+    receivedAt: "há 6h",
+    items: [{ name: "Refrigerador Solar 440L", qty: 3 }],
+    destination: "Teresina/PI",
+    notes: "Fora do escopo operacional atual — encaminhado ao comercial",
+  },
+  {
+    id: "SOL-0008",
+    channel: "manual",
+    status: "convertida",
+    client: "Froneri",
+    subject: "Cadastro manual — Reentrega sorvetes devolvidos",
+    preview: "Reentrega de 45 caixas de sorvete Froneri 2L devolvidas por avaria na embalagem…",
+    fullBody: `Cadastro manual pelo analista.
+
+Motivo: Reentrega de 45 caixas de sorvete Froneri 2L devolvidas por avaria na embalagem externa.
+Cliente destino: Supermercado Pão de Açúcar — Moema/SP
+Prazo: Mesmo dia
+Temperatura: -18°C (congelado)
+Observação: Embalagens substituídas no CD. Produto OK para venda.`,
+    senderName: "Renata Moura (Analista)",
+    senderEmail: "renata.moura@begur.com.br",
+    receivedAt: "há 8h",
+    items: [{ name: "Sorvete Froneri 2L", qty: 45 }],
+    destination: "Pão de Açúcar Moema — São Paulo/SP",
+    convertedTo: "BGR-0128",
+  },
+];
+
 export const OCCURRENCES_DATA: Occurrence[] = [
   { id: "OCR-1100", deliveryId: "BGR-0107", type: "recusa", severity: "high", description: "Cliente ausente — segunda tentativa", opened: "há 12 min", status: "aberta", owner: "Renata Moura" },
   { id: "OCR-1101", deliveryId: "BGR-0115", type: "atraso", severity: "medium", description: "Tráfego intenso na Marginal Pinheiros", opened: "há 34 min", status: "em_analise", owner: "Marcos Silva" },
@@ -194,7 +439,7 @@ export const ANALYSTS: AnalystData[] = [
     name: "Renata Moura",
     role: "Analista Sênior",
     avatar: "RM",
-    clients: ["Vivo Empresas", "Algar Telecom"],
+    clients: ["Heineken", "Bacio di Latte", "Froneri"],
     stats: { abertas: 8, emExecucao: 14, concluidas: 127, ocorrencias: 3, slaAtRisk: 2 },
   },
   {
@@ -202,7 +447,7 @@ export const ANALYSTS: AnalystData[] = [
     name: "Marcos Silva",
     role: "Analista Pleno",
     avatar: "MS",
-    clients: ["Claro NXT", "Oi Soluções"],
+    clients: ["Nestlé", "Seara", "Natural One"],
     stats: { abertas: 5, emExecucao: 11, concluidas: 98, ocorrencias: 2, slaAtRisk: 1 },
   },
   {
@@ -210,16 +455,20 @@ export const ANALYSTS: AnalystData[] = [
     name: "Carla Santos",
     role: "Analista Pleno",
     avatar: "CS",
-    clients: ["TIM Live", "Embratel"],
+    clients: ["Metalfrio T1", "Metalfrio T2", "3L", "Solar"],
     stats: { abertas: 6, emExecucao: 9, concluidas: 112, ocorrencias: 4, slaAtRisk: 0 },
   },
 ];
 
 export const CUSTOMERS = [
-  { name: "Vivo Empresas", segment: "Telecom B2B", orders30: 412, otif: 98.1, sla: "4h", contact: "logistica@vivo.com.br" },
-  { name: "Claro NXT", segment: "Telecom B2B", orders30: 298, otif: 96.4, sla: "6h", contact: "ops@claro.com.br" },
-  { name: "TIM Live", segment: "Residencial", orders30: 521, otif: 97.8, sla: "Mesmo dia", contact: "delivery@tim.com.br" },
-  { name: "Algar Telecom", segment: "Telecom Regional", orders30: 187, otif: 95.0, sla: "24h", contact: "operacoes@algar.com.br" },
-  { name: "Oi Soluções", segment: "Telecom B2B", orders30: 132, otif: 93.2, sla: "12h", contact: "compras@oi.com.br" },
-  { name: "Embratel", segment: "Enterprise", orders30: 224, otif: 99.0, sla: "8h", contact: "supply@embratel.com" },
+  { name: "3L", segment: "Bebidas", orders30: 187, otif: 96.2, sla: "12h", contact: "logistica@3l.com.br" },
+  { name: "Bacio di Latte", segment: "Gelatos/Sorvetes", orders30: 312, otif: 98.5, sla: "4h", contact: "ops@baciodilatte.com.br" },
+  { name: "Froneri", segment: "Sorvetes/Congelados", orders30: 298, otif: 97.1, sla: "6h", contact: "supply@froneri.com.br" },
+  { name: "Heineken", segment: "Bebidas", orders30: 521, otif: 98.8, sla: "6h", contact: "logistica@heineken.com.br" },
+  { name: "Metalfrio T1", segment: "Equipamentos Refrigerados", orders30: 145, otif: 94.5, sla: "24h", contact: "operacoes.t1@metalfrio.com.br" },
+  { name: "Metalfrio T2", segment: "Equipamentos Refrigerados", orders30: 98, otif: 95.0, sla: "24h", contact: "operacoes.t2@metalfrio.com.br" },
+  { name: "Natural One", segment: "Sucos/Bebidas", orders30: 267, otif: 97.8, sla: "Mesmo dia", contact: "entregas@naturalone.com.br" },
+  { name: "Nestlé", segment: "Alimentos/Bebidas", orders30: 412, otif: 99.0, sla: "8h", contact: "supply.chain@nestle.com.br" },
+  { name: "Seara", segment: "Alimentos Congelados", orders30: 378, otif: 96.4, sla: "12h", contact: "logistica@seara.com.br" },
+  { name: "Solar", segment: "Bebidas/Distribuição", orders30: 445, otif: 97.3, sla: "12h", contact: "distribuicao@solar.com.br" },
 ];

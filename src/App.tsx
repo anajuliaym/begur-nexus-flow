@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/AppShell";
 import Dashboard from "./pages/Dashboard";
+import Solicitacoes from "./pages/Solicitacoes";
 import Entregas from "./pages/Entregas";
 import EntregaDetail from "./pages/EntregaDetail";
 import OcorrenciasPage from "./pages/OcorrenciasPage";
@@ -24,6 +25,7 @@ const App = () => {
           <AppShell onAiOpen={() => {}}>
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/solicitacoes" element={<Solicitacoes />} />
               <Route path="/entregas" element={<Entregas />} />
               <Route path="/entregas/:id" element={<EntregaDetail />} />
               <Route path="/ocorrencias" element={<OcorrenciasPage />} />
