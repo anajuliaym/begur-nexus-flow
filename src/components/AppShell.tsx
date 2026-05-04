@@ -1,7 +1,8 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Briefcase, Package, AlertTriangle, BarChart3, Bell, Search, ChevronRight, Activity, Inbox, Sparkles, Smartphone, Globe } from "lucide-react";
+import { Briefcase, Package, AlertTriangle, BarChart3, Bell, Search, ChevronRight, Inbox, Sparkles, Smartphone, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
+import begurLogo from "@/assets/begur-logo.png";
 
 const NAV = [
   { to: "/", label: "Operação", icon: Briefcase, description: "Mesa do Analista" },
@@ -36,11 +37,8 @@ export function AppShell({ children, onAiOpen }: { children: React.ReactNode; on
       {/* Sidebar */}
       <aside className="w-[220px] shrink-0 border-r border-sidebar-border bg-sidebar flex flex-col">
         <div className="h-16 px-5 flex items-center gap-3 border-b border-sidebar-border">
-          <div className="h-9 w-9 rounded-xl bg-gradient-primary grid place-items-center shadow-glow">
-            <Activity className="h-4.5 w-4.5 text-primary-foreground" strokeWidth={2.5} />
-          </div>
+          <img src={begurLogo} alt="Begur" className="h-7 brightness-0 invert" />
           <div className="flex flex-col leading-tight">
-            <span className="text-sm font-bold text-white tracking-tight">Begur</span>
             <span className="text-[10px] uppercase tracking-[0.14em] text-sidebar-foreground">Control Tower</span>
           </div>
         </div>
