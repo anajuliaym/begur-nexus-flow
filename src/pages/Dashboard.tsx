@@ -1,184 +1,233 @@
-import { PageHeader, Kpi, Btn, StatusBadge, SlaBadge } from "@/components/ui-kit";
-import { KPIS, BACKLOG_BY_STAGE, HANDOFFS, ORDERS, OCCURRENCES, STAGES, OWNERS_BY_STAGE, AI_RECS, STATUS_META, Stage } from "@/data/mock";
-import { useMode } from "@/contexts/ModeContext";
-import { ArrowRight, AlertTriangle, Clock, Sparkles, FileText, MessageCircle, Workflow, Users } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Kpi, PageHeader, StatusBadge, SlaBadge, Btn, Filters } from "@/components/ui-kit";
+import { ORDERS, KPIS, AI_RECS, HEATMAP, TRIPS } from "@/data/mock";
+import {
+  Activity, Truck, AlertTriangle, Boxes, Clock, CheckCircle2, Sparkles,
+  TrendingUp, ArrowUpRight, MapPin, Zap, Radio
+} from "lucide-react";
+
+const ICONS: any = { primary: Activity, info: Truck, success: CheckCircle2, warning: Clock, destructive: AlertTriangle };
 
 export default function Dashboard() {
-  const { mode } = useMode();
-  const breached = HANDOFFS.filter(h => h.sla === "breached").length;
-  const atRisk = HANDOFFS.filter(h => h.sla === "at_risk").length;
-
+  const inRoute = ORDERS.filter(o => o.status === "in_route").slice(0, 6);
   return (
-    <div className="p-5 space-y-5">
+    <div className="p-6 space-y-5">
       <PageHeader
         title="Torre de Controle"
-        subtitle={mode === "real"
-          ? "Operação Begur hoje — visão de workflow ponta a ponta. Cada estágio tem dono. Cada handoff tem SLA."
-          : "Visão alvo — operação orquestrada por eventos, dado padronizado, copiloto ativo."}
-        actions={<>
-          <Btn>Hoje</Btn>
-          <Btn variant="primary">Abrir mesa do analista</Btn>
-        </>}
+        subtitle="Centro de comando operacional em tempo real · Terça-feira, 28 de abril de 2026 · 14:32 BRT"
+        actions={
+          <>
+            <Filters items={["Hoje","Esta semana","Mês","Trimestre"]} />
+            <Btn variant="outline"><Radio className="h-3 w-3" /> Ao vivo</Btn>
+            <Btn variant="primary"><Sparkles className="h-3 w-3" /> Resumo IA</Btn>
+          </>
+        }
       />
 
-      {/* KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-        {KPIS.map(k => <Kpi key={k.label} {...k} />)}
+      {/* KPI strip */}
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+        {KPIS.map(k => <Kpi key={k.label} {...k} icon={ICONS[k.tone]} />)}
       </div>
 
-      {/* Pipeline da entrega — backlog por etapa */}
-      <div className="panel">
-        <div className="panel-header">
-          <div className="flex items-center gap-2">
-            <Workflow className="h-4 w-4 text-primary" />
-            <div>
-              <div className="text-sm font-semibold">Pipeline da entrega — backlog por etapa</div>
-              <div className="text-[11px] text-muted-foreground">Cada estágio tem um dono. Operação real é cheia de idas e voltas.</div>
-            </div>
-          </div>
-          <Link to="/workflow" className="text-xs text-primary hover:underline flex items-center gap-1">Ver fluxo completo <ArrowRight className="h-3 w-3" /></Link>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-px bg-border">
-          {BACKLOG_BY_STAGE.map((s, i) => (
-            <div key={s.stage} className="bg-card p-3 hover:bg-accent/30 transition cursor-pointer">
-              <div className="flex items-center justify-between mb-1">
-                <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{s.stage}</div>
-                <div className="text-[10px] text-muted-foreground tnum">#{i+1}</div>
-              </div>
-              <div className="text-2xl font-bold tnum">{s.count}</div>
-              <div className="text-[10px] text-muted-foreground truncate" title={s.owner}>{s.owner}</div>
-              <div className="flex items-center gap-2 mt-2 text-[10px]">
-                {s.atRisk > 0 && <span className="text-warning font-semibold">⚠ {s.atRisk} risco</span>}
-                {s.breached > 0 && <span className="text-destructive font-semibold">● {s.breached} estourado</span>}
-                {s.atRisk === 0 && s.breached === 0 && <span className="text-success">✓ saudável</span>}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-12 gap-5">
-        {/* Handoffs */}
-        <div className="panel col-span-12 lg:col-span-7">
+      <div className="grid grid-cols-12 gap-4">
+        {/* Heatmap */}
+        <div className="col-span-12 xl:col-span-8 panel">
           <div className="panel-header">
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-primary" />
-              <div>
-                <div className="text-sm font-semibold">Handoffs entre áreas</div>
-                <div className="text-[11px] text-muted-foreground">Onde o trabalho está parado entre uma área e outra. {breached > 0 && <span className="text-destructive font-semibold">{breached} estourados.</span>} {atRisk > 0 && <span className="text-warning font-semibold ml-1">{atRisk} em risco.</span>}</div>
+            <div>
+              <div className="text-sm font-semibold">Mapa de calor operacional — entregas / hora</div>
+              <div className="text-xs text-muted-foreground">Últimos 7 dias · Região metropolitana de São Paulo</div>
+            </div>
+            <Filters items={["Volume","Risco SLA","Margem"]} />
+          </div>
+          <div className="p-4">
+            <div className="flex items-start gap-2">
+              <div className="flex flex-col gap-1 text-[10px] text-muted-foreground pt-5">
+                {["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].map(d => <div key={d} className="h-5 flex items-center">{d}</div>)}
+              </div>
+              <div className="flex-1">
+                <div className="grid grid-cols-24 gap-[3px]" style={{ gridTemplateColumns: "repeat(24, minmax(0, 1fr))" }}>
+                  {Array.from({ length: 24 }).map((_, h) => (
+                    <div key={h} className="text-[9px] text-muted-foreground text-center mb-1">{h.toString().padStart(2,"0")}</div>
+                  ))}
+                  {HEATMAP.map((c, i) => {
+                    const a = Math.min(1, c.v / 100);
+                    return (
+                      <div key={i}
+                        className="h-5 rounded-[3px] border border-white/5"
+                        style={{ background: `hsl(188 92% 48% / ${a})` }}
+                        title={`${c.v} entregas`}
+                      />
+                    );
+                  })}
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-[10px] text-muted-foreground">
+                  <span>Menor</span>
+                  {[0.1,0.3,0.5,0.7,0.9].map(a => <span key={a} className="h-3 w-3 rounded-sm" style={{background:`hsl(188 92% 48% / ${a})`}}/>)}
+                  <span>Maior</span>
+                  <span className="ml-auto">Pico: 14:00–17:00 · Ter/Qui</span>
+                </div>
               </div>
             </div>
-            <Btn>Reatribuir em massa</Btn>
           </div>
-          <div className="divide-y divide-border">
-            {HANDOFFS.map(h => (
-              <div key={h.id} className="px-4 py-2.5 row-hover flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full shrink-0" style={{
-                  background: h.sla === "breached" ? "hsl(var(--destructive))" : h.sla === "at_risk" ? "hsl(var(--warning))" : "hsl(var(--success))"
-                }} />
-                <div className="text-xs font-mono text-muted-foreground w-20">{h.order}</div>
-                <div className="flex items-center gap-1.5 text-xs flex-1">
-                  <span className="text-muted-foreground truncate max-w-[160px]">{h.from}</span>
-                  <ArrowRight className="h-3 w-3 text-muted-foreground shrink-0" />
-                  <span className="font-semibold truncate max-w-[180px]">{h.to}</span>
+        </div>
+
+        {/* AI recommendations */}
+        <div className="col-span-12 xl:col-span-4 panel relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-glow pointer-events-none" />
+          <div className="panel-header relative">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <div className="text-sm font-semibold">Recomendações da IA</div>
+            </div>
+            <span className="chip bg-primary/10 text-primary border-primary/30">4 novas</span>
+          </div>
+          <div className="p-3 space-y-2 relative">
+            {AI_RECS.map((r, i) => (
+              <div key={i} className="rounded-md border border-border bg-surface-2/60 p-3 hover:bg-surface-3 transition cursor-pointer group">
+                <div className="flex items-start gap-2.5">
+                  <div className="h-7 w-7 shrink-0 rounded-md bg-primary/15 grid place-items-center">
+                    <Zap className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <div className="text-xs font-semibold">{r.title}</div>
+                      <span className={`chip text-[10px] ${r.impact === "alta" ? "bg-destructive/10 text-destructive border-destructive/30" : "bg-warning/10 text-warning border-warning/30"}`}>{r.impact}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1 leading-relaxed">{r.body}</div>
+                    <div className="mt-2 flex items-center gap-1.5">
+                      <Btn variant="primary" className="h-7 px-2.5">Aplicar</Btn>
+                      <Btn variant="ghost" className="h-7 px-2.5">Dispensar</Btn>
+                    </div>
+                  </div>
                 </div>
-                <span className="chip bg-surface-2 text-muted-foreground border-border">{h.stage}</span>
-                {h.blocker && <span className="text-[11px] text-warning truncate max-w-[200px]" title={h.blocker}>⚠ {h.blocker}</span>}
-                <div className="text-xs text-muted-foreground tnum w-16 text-right">{h.age}</div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Modo Real: WhatsApp / NF física | Modo Alvo: AI recs */}
-        {mode === "real" ? (
-          <div className="panel col-span-12 lg:col-span-5">
+        {/* Live orders in route */}
+        <div className="col-span-12 xl:col-span-8 panel">
+          <div className="panel-header">
+            <div className="text-sm font-semibold flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-success opacity-75 animate-ping" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
+              </span>
+              Entregas em rota — ao vivo
+            </div>
+            <Btn variant="ghost">Ver todas <ArrowUpRight className="h-3 w-3" /></Btn>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead className="text-muted-foreground border-b border-border">
+                <tr className="[&>th]:text-left [&>th]:font-medium [&>th]:px-3 [&>th]:py-2 uppercase tracking-wider text-[10px]">
+                  <th>Pedido</th><th>Cliente</th><th>Destino</th><th>Motorista</th><th>ETA</th><th>SLA</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody className="tnum">
+                {inRoute.map(o => (
+                  <tr key={o.id} className="border-b border-border row-hover">
+                    <td className="px-3 py-2.5 font-mono text-[11px] text-primary">{o.id}</td>
+                    <td className="px-3 py-2.5 font-medium">{o.client}</td>
+                    <td className="px-3 py-2.5 text-muted-foreground"><MapPin className="h-3 w-3 inline mr-1" />{o.destination}</td>
+                    <td className="px-3 py-2.5">{o.driver}</td>
+                    <td className="px-3 py-2.5">{o.eta}</td>
+                    <td className="px-3 py-2.5"><SlaBadge sla={o.sla} /></td>
+                    <td className="px-3 py-2.5"><StatusBadge status={o.status} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Right column: cross dock + exceptions */}
+        <div className="col-span-12 xl:col-span-4 space-y-4">
+          <div className="panel">
             <div className="panel-header">
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-warning" />
-                <div>
-                  <div className="text-sm font-semibold">Dependências físicas / manuais hoje</div>
-                  <div className="text-[11px] text-muted-foreground">A operação ainda passa por papel, foto e WhatsApp.</div>
-                </div>
-              </div>
+              <div className="text-sm font-semibold flex items-center gap-2"><Boxes className="h-3.5 w-3.5" /> Carga do cross-dock</div>
             </div>
             <div className="p-4 space-y-3">
               {[
-                { icon: FileText, label: "NF físicas pendentes de digitação", value: "12", note: "recepção CD Barueri", tone: "text-warning" },
-                { icon: FileText, label: "Romaneios impressos aguardando assinatura", value: "7", note: "expedição turno tarde", tone: "text-warning" },
-                { icon: MessageCircle, label: "Ocorrências reportadas só por WhatsApp", value: "18", note: "últimas 24h — não estruturadas", tone: "text-destructive" },
-                { icon: FileText, label: "Comprovantes de entrega em foto não anexada", value: "23", note: "motoristas com canhoto pendente", tone: "text-destructive" },
-                { icon: AlertTriangle, label: "Planilhas paralelas Excel ativas hoje", value: "9", note: "controle por área — ainda existe", tone: "text-warning" },
-              ].map((it, i) => {
-                const Icon = it.icon;
-                return (
-                  <div key={i} className="flex items-center gap-3 p-2.5 rounded-md bg-surface-2 border border-border">
-                    <Icon className={cn("h-4 w-4", it.tone)} />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs font-medium truncate">{it.label}</div>
-                      <div className="text-[10px] text-muted-foreground truncate">{it.note}</div>
-                    </div>
-                    <div className={cn("text-xl font-bold tnum", it.tone)}>{it.value}</div>
+                { name: "Fila de separação", v: 142, max: 200, tone: "primary" },
+                { name: "Aguardando OS", v: 38, max: 80, tone: "info" },
+                { name: "Doca de carregamento", v: 22, max: 30, tone: "warning" },
+                { name: "Pronto para despacho", v: 89, max: 120, tone: "success" },
+              ].map(b => (
+                <div key={b.name}>
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <span className="text-muted-foreground">{b.name}</span>
+                    <span className="tnum font-semibold">{b.v}<span className="text-muted-foreground"> / {b.max}</span></span>
                   </div>
-                );
-              })}
-              <div className="text-[10px] text-muted-foreground italic pt-1">
-                Estes itens viram a Fase 1 do roadmap: digitalizar o que ainda é papel/áudio.
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="panel col-span-12 lg:col-span-5">
-            <div className="panel-header">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-primary" />
-                <div>
-                  <div className="text-sm font-semibold">Recomendações do Copilot</div>
-                  <div className="text-[11px] text-muted-foreground">Sugestões geradas sobre dado já padronizado.</div>
-                </div>
-              </div>
-            </div>
-            <div className="divide-y divide-border">
-              {AI_RECS.map((r, i) => (
-                <div key={i} className="p-3 row-hover">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="h-3.5 w-3.5 text-primary" />
-                    <div className="text-xs font-semibold flex-1">{r.title}</div>
-                    <span className={cn("chip text-[10px]", r.impact === "alta" ? "bg-destructive/10 text-destructive border-destructive/30" : "bg-warning/10 text-warning border-warning/30")}>{r.impact}</span>
+                  <div className="h-1.5 bg-surface-3 rounded-full overflow-hidden">
+                    <div className={`h-full bg-${b.tone}`} style={{ width: `${(b.v/b.max)*100}%`, background: `hsl(var(--${b.tone}))` }} />
                   </div>
-                  <div className="text-[11px] text-muted-foreground mt-1 ml-5">{r.body}</div>
                 </div>
               ))}
             </div>
           </div>
-        )}
-      </div>
 
-      {/* Ocorrências críticas */}
-      <div className="panel">
-        <div className="panel-header">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-destructive" />
-            <div>
-              <div className="text-sm font-semibold">Ocorrências abertas — onde a operação realmente vive</div>
-              <div className="text-[11px] text-muted-foreground">Tipologia real: espera 30min, recusa, reentrega, troca remessa, comprovante pendente.</div>
+          <div className="panel">
+            <div className="panel-header">
+              <div className="text-sm font-semibold flex items-center gap-2 text-destructive"><AlertTriangle className="h-3.5 w-3.5" /> Ocorrências</div>
+              <span className="chip bg-destructive/10 text-destructive border-destructive/30">23 em aberto</span>
+            </div>
+            <div className="divide-y divide-border">
+              {[
+                { id: "OCR-1184", t: "Recusa — Vivo", time: "12 min" },
+                { id: "OCR-1183", t: "Atraso — Marginal Tietê", time: "34 min" },
+                { id: "OCR-1182", t: "Avaria — TIM Live", time: "1h" },
+                { id: "OCR-1179", t: "Divergência de serial", time: "5h" },
+              ].map(e => (
+                <div key={e.id} className="p-3 flex items-center gap-3 hover:bg-accent/40">
+                  <span className="h-7 w-7 rounded-md bg-destructive/10 text-destructive grid place-items-center"><AlertTriangle className="h-3.5 w-3.5"/></span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs font-semibold truncate">{e.t}</div>
+                    <div className="text-[11px] text-muted-foreground font-mono">{e.id}</div>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground">{e.time}</span>
+                </div>
+              ))}
             </div>
           </div>
-          <Link to="/occurrences" className="text-xs text-primary hover:underline">Ver todas</Link>
         </div>
-        <div className="divide-y divide-border">
-          {OCCURRENCES.slice(0, 5).map(o => (
-            <div key={o.id} className="px-4 py-2.5 row-hover flex items-center gap-3">
-              <span className={cn("chip text-[10px]", o.severity === "high" ? "bg-destructive/10 text-destructive border-destructive/30" : o.severity === "medium" ? "bg-warning/10 text-warning border-warning/30" : "bg-info/10 text-info border-info/30")}>{o.type}</span>
-              <div className="text-xs font-mono text-muted-foreground w-20">{o.order}</div>
-              <div className="text-xs flex-1 truncate">{o.client} — <span className="text-muted-foreground">{o.reason}</span></div>
-              <div className="text-[11px] text-muted-foreground">{o.evidence}</div>
-              <div className="text-xs text-muted-foreground w-32 truncate">{o.owner}</div>
-              <div className="text-xs text-muted-foreground tnum w-16 text-right">{o.opened}</div>
-            </div>
-          ))}
+
+        {/* Trips overview */}
+        <div className="col-span-12 panel">
+          <div className="panel-header">
+            <div className="text-sm font-semibold flex items-center gap-2"><TrendingUp className="h-3.5 w-3.5"/> Viagens ativas · viabilidade</div>
+            <Filters items={["Todas","Em andamento","Planejadas","Encerradas"]} />
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead className="text-muted-foreground border-b border-border">
+                <tr className="[&>th]:text-left [&>th]:font-medium [&>th]:px-3 [&>th]:py-2 uppercase tracking-wider text-[10px]">
+                  <th>Viagem</th><th>Motorista / Veículo</th><th>Região</th><th>Paradas</th><th>Distância</th><th>Receita</th><th>Custo</th><th>Margem</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody className="tnum">
+                {TRIPS.map(t => (
+                  <tr key={t.id} className="border-b border-border row-hover">
+                    <td className="px-3 py-2.5 font-mono text-[11px] text-primary">{t.id}</td>
+                    <td className="px-3 py-2.5"><div className="font-medium">{t.driver}</div><div className="text-[10px] text-muted-foreground">{t.vehicle}</div></td>
+                    <td className="px-3 py-2.5">{t.region}</td>
+                    <td className="px-3 py-2.5">{t.stops}</td>
+                    <td className="px-3 py-2.5">{t.distance}</td>
+                    <td className="px-3 py-2.5 text-success">R$ {t.revenue.toLocaleString("pt-BR")}</td>
+                    <td className="px-3 py-2.5 text-muted-foreground">R$ {t.cost.toLocaleString("pt-BR")}</td>
+                    <td className="px-3 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold">{t.margin}%</span>
+                        <div className="h-1 w-12 bg-surface-3 rounded-full overflow-hidden">
+                          <div className="h-full bg-success" style={{ width: `${t.margin*2}%` }} />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-3 py-2.5"><span className="chip border-border text-muted-foreground">{t.status}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { PageHeader, Btn, Filters, StatusBadge, SlaBadge } from "@/components/ui-kit";
 import { ORDERS, STATUS_META } from "@/data/mock";
-import { Plus, Download, MoreHorizontal, Mail, MessageSquare, Globe, Layout, Edit3, Paperclip, FileText, Plug } from "lucide-react";
+import { Plus, Download, MoreHorizontal, Mail, MessageSquare, Globe, Layout, Edit3, Paperclip } from "lucide-react";
 
-const CHANNEL_ICON: any = { Email: Mail, WhatsApp: MessageSquare, "API/Lincros": Plug, Portal: Layout, Manual: Edit3, "NF Física": FileText };
+const CHANNEL_ICON: any = { Email: Mail, WhatsApp: MessageSquare, API: Globe, Portal: Layout, Manual: Edit3 };
 
 export default function Orders() {
   const [tab, setTab] = useState<string>("all");
@@ -21,7 +21,7 @@ export default function Orders() {
         </>}
       />
 
-      {/* Status pills com contagem por estágio do workflow */}
+      {/* Status pills with counts */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
         <button onClick={() => setTab("all")}
           className={`px-3 h-8 rounded-md text-xs font-medium border whitespace-nowrap ${tab==="all" ? "bg-primary/15 text-primary border-primary/30" : "border-border text-muted-foreground hover:text-foreground"}`}>
@@ -37,7 +37,7 @@ export default function Orders() {
 
       <div className="panel overflow-hidden">
         <div className="panel-header">
-          <Filters items={["Todos os clientes","Heineken","Nestlé","Seara","Froneri","Bacio","Solar","Metalfrio","Natural One"]} />
+          <Filters items={["Todos os clientes","Vivo","Claro","TIM","Algar","Oi","Embratel"]} />
           <div className="flex gap-1.5">
             <Btn variant="outline">Ações em massa</Btn>
             <Btn variant="ghost"><MoreHorizontal className="h-3 w-3"/></Btn>
@@ -48,26 +48,23 @@ export default function Orders() {
             <thead className="text-muted-foreground border-b border-border bg-surface-1/50 sticky top-0">
               <tr className="[&>th]:text-left [&>th]:font-medium [&>th]:px-3 [&>th]:py-2.5 uppercase tracking-wider text-[10px]">
                 <th><input type="checkbox" className="accent-primary"/></th>
-                <th>Pedido</th><th>Cliente</th><th>Canal</th><th>Carga</th>
+                <th>Pedido</th><th>Cliente</th><th>Canal</th><th>Equipamento</th>
                 <th>Destino</th><th>Motorista</th><th>ETA</th><th>SLA</th><th>Status</th><th>Valor</th><th>Criado</th><th></th>
               </tr>
             </thead>
             <tbody className="tnum">
               {filtered.slice(0, 30).map(o => {
-                const Ch = CHANNEL_ICON[o.channel] ?? Edit3;
+                const Ch = CHANNEL_ICON[o.channel];
                 return (
                   <tr key={o.id} className="border-b border-border row-hover">
                     <td className="px-3 py-2.5"><input type="checkbox" className="accent-primary"/></td>
                     <td className="px-3 py-2.5">
                       <div className="font-mono text-[11px] text-primary">{o.id}</div>
-                      <div className="text-[10px] text-muted-foreground flex items-center gap-1">
-                        {o.serialRequired && <><Paperclip className="h-2.5 w-2.5"/>requer SN</>}
-                        {o.hasPhysicalDoc && <span className="text-warning ml-1">📄 NF física</span>}
-                      </div>
+                      <div className="text-[10px] text-muted-foreground flex items-center gap-1"><Paperclip className="h-2.5 w-2.5"/>SN {o.serial?.slice(-6)}</div>
                     </td>
                     <td className="px-3 py-2.5 font-medium">{o.client}</td>
                     <td className="px-3 py-2.5"><span className="inline-flex items-center gap-1 text-muted-foreground"><Ch className="h-3 w-3"/>{o.channel}</span></td>
-                    <td className="px-3 py-2.5 text-muted-foreground truncate max-w-[180px]" title={o.cargo}>{o.qty} {o.unit} · {o.cargo}</td>
+                    <td className="px-3 py-2.5 text-muted-foreground truncate max-w-[160px]">{o.equipment}</td>
                     <td className="px-3 py-2.5">{o.destination}</td>
                     <td className="px-3 py-2.5 text-muted-foreground">{o.driver ?? "—"}</td>
                     <td className="px-3 py-2.5">{o.eta}</td>
