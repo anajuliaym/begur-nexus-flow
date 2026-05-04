@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DELIVERIES, ANALYSTS, STAGE_META, OCCURRENCES_DATA, DeliveryStage } from "@/data/mock";
+import { DELIVERIES, ANALYSTS, STAGE_META, OCCURRENCES_DATA, DeliveryStage, SERVICE_REQUESTS } from "@/data/mock";
 import { StageBadge, SlaBadge, Kpi } from "@/components/ui-kit";
-import { Package, AlertTriangle, Clock, CheckCircle2, TrendingUp, ChevronRight, User } from "lucide-react";
+import { Package, AlertTriangle, Clock, CheckCircle2, TrendingUp, ChevronRight, User, Inbox, BarChart3, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const CURRENT_ANALYST = ANALYSTS[0];
@@ -11,6 +11,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const myDeliveries = DELIVERIES.filter(d => d.analystId === CURRENT_ANALYST.id);
   const myOccurrences = OCCURRENCES_DATA.filter(o => o.owner === CURRENT_ANALYST.name);
+  const pendingRequests = SERVICE_REQUESTS.filter(r => r.status === "pendente");
 
   const stageCounts = (stage: DeliveryStage) => myDeliveries.filter(d => d.stage === stage).length;
   const atRisk = myDeliveries.filter(d => d.slaStatus !== "on_track").length;
@@ -36,18 +37,44 @@ export default function Dashboard() {
       </div>
 
       {/* KPI Strip */}
-      <div className="grid grid-cols-5 gap-4">
-        <Kpi label="Solicitações" value={stageCounts("solicitacao")} tone="info" icon={Clock} />
-        <Kpi label="Em preparação" value={stageCounts("preparacao")} tone="warning" icon={Package} />
+      <div className="grid grid-cols-6 gap-4">
+        <Kpi label="Solicitações" value={pendingRequests.length} tone="info" icon={Inbox} trend="+3 hoje" />
+        <Kpi label="Novas" value={stageCounts("solicitacao")} tone="info" icon={Clock} />
+        <Kpi label="Preparação" value={stageCounts("preparacao")} tone="warning" icon={Package} />
         <Kpi label="Em execução" value={stageCounts("execucao")} tone="primary" icon={TrendingUp} />
-        <Kpi label="Concluídas" value={stageCounts("concluida")} tone="success" icon={CheckCircle2} />
+        <Kpi label="Concluídas" value={stageCounts("concluida")} tone="success" icon={CheckCircle2} trend="+8 hoje" />
         <Kpi label="Ocorrências" value={myOccurrences.filter(o => o.status !== "resolvida").length} tone="destructive" icon={AlertTriangle} />
       </div>
+
+      {/* Pending requests banner */}
+      {pendingRequests.length > 0 && (
+        <button 
+          onClick={() => navigate("/solicitacoes")}
+          className="w-full panel p-4 flex items-center gap-4 hover:bg-accent/30 transition border-info/30"
+        >
+          <div className="h-10 w-10 rounded-xl bg-info/10 grid place-items-center shrink-0">
+            <Inbox className="h-5 w-5 text-info" />
+          </div>
+          <div className="flex-1 text-left">
+            <div className="text-sm font-semibold">{pendingRequests.length} solicitações aguardando análise</div>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {pendingRequests.slice(0, 3).map(r => r.client).join(", ")}
+              {pendingRequests.length > 3 && ` e mais ${pendingRequests.length - 3}`}
+            </p>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </button>
+      )}
 
       <div className="grid grid-cols-12 gap-5">
         {/* Pipeline visual */}
         <div className="col-span-8 space-y-4">
-          <h2 className="text-sm font-semibold">Pipeline de entregas</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold">Pipeline de entregas</h2>
+            <button onClick={() => navigate("/entregas")} className="text-xs text-primary hover:underline flex items-center gap-1">
+              Ver todas <ChevronRight className="h-3 w-3" />
+            </button>
+          </div>
           {(["solicitacao", "preparacao", "execucao", "retorno"] as DeliveryStage[]).map(stage => {
             const items = myDeliveries.filter(d => d.stage === stage);
             if (items.length === 0) return null;
@@ -84,6 +111,13 @@ export default function Dashboard() {
                       <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
                     </button>
                   ))}
+                  {items.length > 5 && (
+                    <div className="p-3 text-center">
+                      <button onClick={() => navigate("/entregas")} className="text-xs text-primary hover:underline">
+                        +{items.length - 5} mais
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             );
@@ -92,6 +126,28 @@ export default function Dashboard() {
 
         {/* Right sidebar */}
         <div className="col-span-4 space-y-4">
+          {/* Performance summary */}
+          <div className="panel p-5">
+            <h3 className="text-xs font-semibold mb-3 flex items-center gap-1.5"><BarChart3 className="h-3.5 w-3.5 text-primary" />Performance do dia</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">OTIF</span>
+                <span className="text-sm font-semibold text-success flex items-center gap-1">98.2% <ArrowUpRight className="h-3 w-3" /></span>
+              </div>
+              <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                <div className="h-full bg-success rounded-full" style={{ width: "98.2%" }} />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Tempo médio de ciclo</span>
+                <span className="text-sm font-semibold tnum">6h42min</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Entregas hoje</span>
+                <span className="text-sm font-semibold tnum flex items-center gap-1">14 <ArrowUpRight className="h-3 w-3 text-success" /></span>
+              </div>
+            </div>
+          </div>
+
           {/* SLA Alerts */}
           {atRisk > 0 && (
             <div className="panel border-warning/30">
@@ -116,6 +172,7 @@ export default function Dashboard() {
           <div className="panel border-destructive/20">
             <div className="panel-header">
               <span className="text-xs font-semibold text-destructive flex items-center gap-1.5"><AlertTriangle className="h-3.5 w-3.5"/>Ocorrências pendentes</span>
+              <button onClick={() => navigate("/ocorrencias")} className="text-[10px] text-primary hover:underline">Ver todas</button>
             </div>
             <div className="divide-y divide-border">
               {myOccurrences.filter(o => o.status !== "resolvida").slice(0, 4).map(o => (
