@@ -1,168 +1,225 @@
-// Dados mockados centralizados — Begur Control Tower
-export type OrderStatus =
-  | "awaiting_separation"
-  | "awaiting_service_order"
-  | "awaiting_routing"
-  | "in_route"
-  | "delivered"
-  | "not_delivered"
-  | "equipment_unavailable"
-  | "exception_pending";
+// Begur Control Tower — Modelo de dados centrado em Entrega (Case)
 
-export const STATUS_META: Record<OrderStatus, { label: string; tone: string }> = {
-  awaiting_separation: { label: "Aguardando separação", tone: "bg-warning/10 text-warning border-warning/30" },
-  awaiting_service_order: { label: "Aguardando OS", tone: "bg-info/10 text-info border-info/30" },
-  awaiting_routing: { label: "Aguardando roteirização", tone: "bg-info/10 text-info border-info/30" },
-  in_route: { label: "Em rota", tone: "bg-primary/10 text-primary border-primary/30" },
-  delivered: { label: "Entregue", tone: "bg-success/10 text-success border-success/30" },
-  not_delivered: { label: "Não entregue", tone: "bg-destructive/10 text-destructive border-destructive/30" },
-  equipment_unavailable: { label: "Equipamento indisponível", tone: "bg-critical/10 text-[hsl(var(--critical))] border-[hsl(var(--critical))]/30" },
-  exception_pending: { label: "Ocorrência pendente", tone: "bg-critical/10 text-[hsl(var(--critical))] border-[hsl(var(--critical))]/30" },
+export type DeliveryStage = "solicitacao" | "preparacao" | "execucao" | "retorno" | "concluida";
+export type DeliveryType = "entrega" | "coleta" | "reentrega" | "remessa";
+export type OccurrenceType = "recusa" | "avaria" | "atraso" | "endereco" | "reentrega" | "equipamento";
+export type Severity = "low" | "medium" | "high";
+
+export const STAGE_META: Record<DeliveryStage, { label: string; color: string; order: number }> = {
+  solicitacao: { label: "Solicitação", color: "bg-info/15 text-info border-info/30", order: 0 },
+  preparacao: { label: "Preparação", color: "bg-warning/15 text-warning border-warning/30", order: 1 },
+  execucao: { label: "Em Execução", color: "bg-primary/15 text-primary border-primary/30", order: 2 },
+  retorno: { label: "Retorno", color: "bg-destructive/15 text-destructive border-destructive/30", order: 3 },
+  concluida: { label: "Concluída", color: "bg-success/15 text-success border-success/30", order: 4 },
 };
 
-export interface Order {
+export const TYPE_LABELS: Record<DeliveryType, string> = {
+  entrega: "Entrega",
+  coleta: "Coleta",
+  reentrega: "Reentrega",
+  remessa: "Remessa",
+};
+
+export interface TimelineEvent {
+  time: string;
+  title: string;
+  description?: string;
+  type: "system" | "driver" | "analyst" | "client" | "exception";
+}
+
+export interface Occurrence {
+  id: string;
+  deliveryId: string;
+  type: OccurrenceType;
+  severity: Severity;
+  description: string;
+  opened: string;
+  status: "aberta" | "em_analise" | "resolvida";
+  owner: string;
+}
+
+export interface Delivery {
   id: string;
   client: string;
+  clientContact: string;
+  type: DeliveryType;
+  stage: DeliveryStage;
   origin: string;
   destination: string;
   city: string;
   uf: string;
-  status: OrderStatus;
-  equipment: string;
-  serial?: string;
+  items: { name: string; qty: number }[];
   driver?: string;
-  eta: string;
-  sla: "on_track" | "at_risk" | "breached";
-  value: number;
+  driverPhone?: string;
+  sla: string;
+  slaStatus: "on_track" | "at_risk" | "breached";
   created: string;
-  channel: "Email" | "WhatsApp" | "API" | "Portal" | "Manual";
+  eta?: string;
+  value: number;
+  analystId: string;
+  timeline: TimelineEvent[];
+  occurrences: string[];
+  notes?: string;
+  recipientName?: string;
+  feedback?: string;
 }
 
-const clients = ["Vivo Empresas", "Claro NXT", "TIM Live", "Algar Telecom", "Oi Soluções", "Embratel", "Sercomtel", "Brisanet"];
-const cities = [
+const clients = [
+  { name: "Vivo Empresas", contact: "logistica@vivo.com.br" },
+  { name: "Claro NXT", contact: "ops@claro.com.br" },
+  { name: "TIM Live", contact: "delivery@tim.com.br" },
+  { name: "Algar Telecom", contact: "operacoes@algar.com.br" },
+  { name: "Oi Soluções", contact: "compras@oi.com.br" },
+  { name: "Embratel", contact: "supply@embratel.com" },
+];
+
+const cities: [string, string][] = [
   ["São Paulo", "SP"], ["Rio de Janeiro", "RJ"], ["Belo Horizonte", "MG"], ["Curitiba", "PR"],
-  ["Porto Alegre", "RS"], ["Salvador", "BA"], ["Recife", "PE"], ["Fortaleza", "CE"], ["Brasília", "DF"],
-  ["Campinas", "SP"], ["Goiânia", "GO"], ["Manaus", "AM"],
+  ["Campinas", "SP"], ["Salvador", "BA"], ["Recife", "PE"], ["Fortaleza", "CE"],
+  ["Brasília", "DF"], ["Goiânia", "GO"], ["Porto Alegre", "RS"], ["Manaus", "AM"],
 ];
-const equip = ["ONT Huawei HG8245", "Roteador WiFi 6 AX1800", "Decoder 4K", "Switch 24P PoE", "Modem DOCSIS 3.1", "Repetidor Mesh", "STB Android TV", "ONU Nokia G-140W"];
-const drivers = ["Carlos Mendes", "Ana Ribeiro", "João Silva", "Marcos Pereira", "Lucas Almeida", "Patrícia Souza", "Fábio Costa", "Renata Lima"];
-const channels: Order["channel"][] = ["Email", "WhatsApp", "API", "Portal", "Manual"];
-const statuses: OrderStatus[] = [
-  "awaiting_separation","awaiting_service_order","awaiting_routing","in_route","in_route","in_route",
-  "delivered","delivered","not_delivered","equipment_unavailable","exception_pending"
+
+const equip = [
+  "ONT Huawei HG8245", "Roteador WiFi 6 AX1800", "Decoder 4K", "Switch 24P PoE",
+  "Modem DOCSIS 3.1", "Repetidor Mesh", "STB Android TV", "ONU Nokia G-140W",
 ];
+
+const drivers = [
+  { name: "Carlos Mendes", phone: "+55 11 99821-4410" },
+  { name: "Ana Ribeiro", phone: "+55 11 98832-1122" },
+  { name: "João Silva", phone: "+55 21 97654-3210" },
+  { name: "Marcos Pereira", phone: "+55 41 99876-5432" },
+  { name: "Patrícia Souza", phone: "+55 11 91234-5678" },
+  { name: "Lucas Almeida", phone: "+55 19 98765-4321" },
+];
+
+const stages: DeliveryStage[] = ["solicitacao", "solicitacao", "preparacao", "preparacao", "execucao", "execucao", "execucao", "retorno", "concluida", "concluida", "concluida", "concluida"];
+const types: DeliveryType[] = ["entrega", "entrega", "entrega", "coleta", "reentrega", "remessa"];
 
 function rand<T>(arr: T[], i: number) { return arr[i % arr.length]; }
 
-export const ORDERS: Order[] = Array.from({ length: 64 }).map((_, i) => {
+function makeTimeline(stage: DeliveryStage, i: number): TimelineEvent[] {
+  const base: TimelineEvent[] = [
+    { time: "08:12", title: "Solicitação recebida", description: "Via e-mail do cliente", type: "system" },
+  ];
+  if (stage === "solicitacao") return base;
+  base.push(
+    { time: "09:30", title: "Dados conferidos", description: "Endereço e itens validados pelo analista", type: "analyst" },
+    { time: "10:15", title: "Roteirização concluída", description: `Incluída na viagem TRP-${44200 + i}`, type: "system" },
+  );
+  if (stage === "preparacao") return base;
+  base.push(
+    { time: "11:00", title: "Saiu para entrega", description: "Motorista confirmou partida do CD", type: "driver" },
+    { time: "13:42", title: "Chegou ao local", description: "GPS confirmado no endereço", type: "driver" },
+  );
+  if (stage === "execucao") return base;
+  if (stage === "retorno") {
+    base.push({ time: "14:00", title: "Tentativa sem sucesso", description: "Cliente ausente no local", type: "exception" });
+    return base;
+  }
+  base.push(
+    { time: "14:05", title: "Entregue com sucesso", description: "Recebido por João Pedro", type: "driver" },
+    { time: "14:10", title: "Comprovante registrado", description: "Foto e assinatura digital", type: "system" },
+    { time: "15:00", title: "Caso encerrado", description: "Feedback positivo do cliente", type: "analyst" },
+  );
+  return base;
+}
+
+export const DELIVERIES: Delivery[] = Array.from({ length: 32 }).map((_, i) => {
+  const client = rand(clients, i);
   const [city, uf] = rand(cities, i * 3);
-  const status = rand(statuses, i * 7 + 1);
-  const sla = i % 9 === 0 ? "breached" : i % 5 === 0 ? "at_risk" : "on_track";
+  const stage = rand(stages, i);
+  const type = rand(types, i);
+  const driver = (stage === "execucao" || stage === "retorno" || stage === "concluida") ? rand(drivers, i) : undefined;
+  const slaStatus = i % 11 === 0 ? "breached" : i % 7 === 0 ? "at_risk" : "on_track";
+
   return {
-    id: `BGR-${(248910 + i).toString()}`,
-    client: rand(clients, i),
+    id: `BGR-${(100 + i).toString().padStart(4, "0")}`,
+    client: client.name,
+    clientContact: client.contact,
+    type,
+    stage,
     origin: "CD Begur — Barueri/SP",
-    destination: `${city}/${uf}`,
-    city, uf,
-    status,
-    equipment: rand(equip, i * 2),
-    serial: `SN${(900000000 + i * 137).toString()}`,
-    driver: status === "in_route" || status === "delivered" || status === "not_delivered" ? rand(drivers, i) : undefined,
-    eta: ["Hoje 14:30", "Hoje 17:10", "Amanhã 09:00", "Amanhã 11:45", "Hoje 19:20", "30/abr 08:00"][i % 6],
-    sla,
+    destination: `Rua das Flores, 420 — ${city}/${uf}`,
+    city,
+    uf,
+    items: [
+      { name: rand(equip, i), qty: 1 + (i % 5) },
+      { name: rand(equip, i + 3), qty: 1 + (i % 3) },
+    ],
+    driver: driver?.name,
+    driverPhone: driver?.phone,
+    sla: ["4h", "6h", "12h", "24h", "Mesmo dia"][i % 5],
+    slaStatus,
+    created: ["há 10 min", "há 30 min", "há 1h", "há 2h", "há 4h", "Ontem", "há 2 dias"][i % 7],
+    eta: stage === "execucao" ? ["14:30", "15:45", "16:20", "17:00"][i % 4] : undefined,
     value: 480 + (i * 137) % 4200,
-    created: ["há 12 min","há 34 min","há 1h","há 2h","há 3h","Ontem","há 2 dias"][i % 7],
-    channel: rand(channels, i),
+    analystId: ["renata", "marcos", "carla"][i % 3],
+    timeline: makeTimeline(stage, i),
+    occurrences: stage === "retorno" ? [`OCR-${1100 + i}`] : [],
+    recipientName: stage === "concluida" ? "João Pedro" : undefined,
+    feedback: stage === "concluida" && i % 3 === 0 ? "Entrega rápida e sem problemas. Obrigado!" : undefined,
   };
 });
 
-export const KPIS = [
-  { label: "Pedidos ativos", value: "1.284", delta: "+8,2%", tone: "primary" },
-  { label: "Em rota", value: "342", delta: "+12", tone: "info" },
-  { label: "Entregues hoje", value: "896", delta: "+4,1%", tone: "success" },
-  { label: "SLA em risco", value: "47", delta: "−6", tone: "warning" },
-  { label: "Ocorrências", value: "23", delta: "+3", tone: "destructive" },
-  { label: "OTIF (7d)", value: "97,4%", delta: "+0,8pp", tone: "success" },
+export const OCCURRENCES_DATA: Occurrence[] = [
+  { id: "OCR-1100", deliveryId: "BGR-0107", type: "recusa", severity: "high", description: "Cliente ausente — segunda tentativa", opened: "há 12 min", status: "aberta", owner: "Renata Moura" },
+  { id: "OCR-1101", deliveryId: "BGR-0115", type: "atraso", severity: "medium", description: "Tráfego intenso na Marginal Pinheiros", opened: "há 34 min", status: "em_analise", owner: "Marcos Silva" },
+  { id: "OCR-1102", deliveryId: "BGR-0103", type: "avaria", severity: "high", description: "Embalagem violada na recepção do CD", opened: "há 1h", status: "aberta", owner: "Carla Santos" },
+  { id: "OCR-1103", deliveryId: "BGR-0119", type: "endereco", severity: "low", description: "CEP divergente — novo endereço confirmado pelo cliente", opened: "há 2h", status: "resolvida", owner: "Renata Moura" },
+  { id: "OCR-1104", deliveryId: "BGR-0108", type: "reentrega", severity: "medium", description: "Reagendado para amanhã às 09:00", opened: "há 3h", status: "em_analise", owner: "Marcos Silva" },
+  { id: "OCR-1105", deliveryId: "BGR-0121", type: "equipamento", severity: "high", description: "Serial divergente do pedido — conferência necessária", opened: "há 5h", status: "aberta", owner: "Carla Santos" },
+  { id: "OCR-1106", deliveryId: "BGR-0112", type: "recusa", severity: "medium", description: "Endereço comercial fechado no horário", opened: "há 6h", status: "em_analise", owner: "Renata Moura" },
+  { id: "OCR-1107", deliveryId: "BGR-0125", type: "atraso", severity: "low", description: "Veículo com pneu furado — substituição em andamento", opened: "há 8h", status: "resolvida", owner: "Marcos Silva" },
 ];
 
-export interface Inbox {
+export interface AnalystData {
   id: string;
-  channel: "Email" | "WhatsApp" | "API" | "Portal";
-  from: string;
-  subject: string;
-  preview: string;
-  received: string;
-  ai_confidence: number;
-  status: "new" | "extracted" | "validated" | "assigned";
-  client: string;
+  name: string;
+  role: string;
+  avatar: string;
+  clients: string[];
+  stats: {
+    abertas: number;
+    emExecucao: number;
+    concluidas: number;
+    ocorrencias: number;
+    slaAtRisk: number;
+  };
 }
 
-export const INBOX: Inbox[] = [
-  { id: "INB-9821", channel: "Email", from: "logistica@vivo.com.br", subject: "Solicitação de entrega — 14 ONTs Huawei — Campinas", preview: "Prezados, segue lista anexa para entrega urgente...", received: "há 2 min", ai_confidence: 0.97, status: "extracted", client: "Vivo Empresas" },
-  { id: "INB-9820", channel: "WhatsApp", from: "+55 11 9 8821-4410 (Claro)", subject: "Retirada de equipamento — cliente B2B", preview: "Bom dia, precisamos retirar 3 decoders...", received: "há 8 min", ai_confidence: 0.89, status: "new", client: "Claro NXT" },
-  { id: "INB-9819", channel: "API", from: "tim.api/orders", subject: "Push em massa — 42 itens", preview: "POST /orders payload validado", received: "há 12 min", ai_confidence: 1.0, status: "validated", client: "TIM Live" },
-  { id: "INB-9818", channel: "Email", from: "operacoes@algar.com.br", subject: "Reagendamento — pedido BGR-248912", preview: "Por favor, reagendar para sexta-feira...", received: "há 22 min", ai_confidence: 0.94, status: "assigned", client: "Algar Telecom" },
-  { id: "INB-9817", channel: "Portal", from: "portal.begur/oi", subject: "Nova OS — instalação corporativa", preview: "Cliente final: Banco Itaú agência 0481", received: "há 31 min", ai_confidence: 1.0, status: "extracted", client: "Oi Soluções" },
-  { id: "INB-9816", channel: "Email", from: "compras@embratel.com.br", subject: "Cotação retornada — aprovado", preview: "Aprovado conforme cotação 4421...", received: "há 44 min", ai_confidence: 0.91, status: "new", client: "Embratel" },
-  { id: "INB-9815", channel: "WhatsApp", from: "+55 41 9 7712-0033", subject: "Equipamento com defeito — troca", preview: "Cliente reportou que ONU não liga...", received: "há 1h", ai_confidence: 0.82, status: "new", client: "Sercomtel" },
-];
-
-export const TRIPS = [
-  { id: "TRP-44218", driver: "Carlos Mendes", vehicle: "VUC — MNT-4A12", stops: 12, distance: "187 km", revenue: 4280, cost: 2940, margin: 31.3, status: "Em andamento", region: "Grande SP" },
-  { id: "TRP-44217", driver: "Ana Ribeiro", vehicle: "Fiorino — KLM-2D55", stops: 8, distance: "94 km", revenue: 2110, cost: 1480, margin: 29.9, status: "Em andamento", region: "ABC Paulista" },
-  { id: "TRP-44216", driver: "João Silva", vehicle: "VUC — RTQ-9988", stops: 14, distance: "242 km", revenue: 5120, cost: 3640, margin: 28.9, status: "Planejada", region: "Vale do Paraíba" },
-  { id: "TRP-44215", driver: "Marcos Pereira", vehicle: "3/4 — BPX-1199", stops: 22, distance: "318 km", revenue: 7840, cost: 5210, margin: 33.5, status: "Manifesto pronto", region: "Litoral SP" },
-  { id: "TRP-44214", driver: "Lucas Almeida", vehicle: "VUC — JKW-7720", stops: 10, distance: "129 km", revenue: 3280, cost: 2410, margin: 26.5, status: "Encerrada", region: "Campinas" },
-  { id: "TRP-44213", driver: "Patrícia Souza", vehicle: "Fiorino — TRC-3344", stops: 6, distance: "62 km", revenue: 1480, cost: 980, margin: 33.8, status: "Em andamento", region: "Centro SP" },
-];
-
-export const OCCURRENCES = [
-  { id: "OCR-1184", order: "BGR-248942", type: "Recusa", severity: "high", client: "Vivo Empresas", reason: "Cliente ausente — segunda tentativa", opened: "há 12 min", owner: "Mon. Squad A", status: "Em investigação" },
-  { id: "OCR-1183", order: "BGR-248921", type: "Atraso", severity: "medium", client: "Claro NXT", reason: "Tráfego intenso na Marginal", opened: "há 34 min", owner: "Mon. Squad B", status: "Comunicada" },
-  { id: "OCR-1182", order: "BGR-248908", type: "Avaria", severity: "high", client: "TIM Live", reason: "Embalagem violada na recepção", opened: "há 1h", owner: "Qualidade", status: "Aguardando evidência" },
-  { id: "OCR-1181", order: "BGR-248899", type: "Endereço", severity: "low", client: "Algar Telecom", reason: "CEP divergente — confirmado novo endereço", opened: "há 2h", owner: "Analista — A. Santos", status: "Resolvida" },
-  { id: "OCR-1180", order: "BGR-248876", type: "Reentrega", severity: "medium", client: "Oi Soluções", reason: "Reagendado para amanhã 09h", opened: "há 3h", owner: "Mon. Squad A", status: "Agendada" },
-  { id: "OCR-1179", order: "BGR-248844", type: "Equipamento", severity: "high", client: "Embratel", reason: "Serial divergente do pedido", opened: "há 5h", owner: "Cross-dock", status: "Em revisão" },
-];
-
-export const DRIVERS = [
-  { name: "Carlos Mendes", doc: "CPF 124.***.***-09", cnh: "E", vehicle: "VUC", region: "Grande SP", trips30: 42, otif: 98.2, rating: 4.9, status: "Disponível" },
-  { name: "Ana Ribeiro", doc: "CPF 332.***.***-12", cnh: "D", vehicle: "Fiorino", region: "ABC", trips30: 38, otif: 96.4, rating: 4.8, status: "Em viagem" },
-  { name: "João Silva", doc: "CPF 887.***.***-44", cnh: "E", vehicle: "VUC", region: "Vale", trips30: 31, otif: 94.1, rating: 4.6, status: "Em viagem" },
-  { name: "Marcos Pereira", doc: "CPF 221.***.***-78", cnh: "E", vehicle: "3/4", region: "Litoral", trips30: 27, otif: 97.0, rating: 4.7, status: "Disponível" },
-  { name: "Lucas Almeida", doc: "CPF 902.***.***-30", cnh: "D", vehicle: "VUC", region: "Campinas", trips30: 35, otif: 95.5, rating: 4.7, status: "Folga" },
-  { name: "Patrícia Souza", doc: "CPF 410.***.***-21", cnh: "D", vehicle: "Fiorino", region: "Centro SP", trips30: 44, otif: 99.1, rating: 5.0, status: "Disponível" },
-];
-
-export const COMPLIANCE = [
-  { entity: "Carlos Mendes", item: "CNH", expires: "2026-08-12", status: "ok" },
-  { entity: "Carlos Mendes", item: "ASO médico", expires: "2026-05-04", status: "warning" },
-  { entity: "Ana Ribeiro", item: "MOPP", expires: "2026-02-18", status: "warning" },
-  { entity: "VUC MNT-4A12", item: "CRLV", expires: "2026-11-30", status: "ok" },
-  { entity: "VUC MNT-4A12", item: "Seguro", expires: "2026-04-30", status: "critical" },
-  { entity: "Fiorino KLM-2D55", item: "Manutenção — 30 mil km", expires: "2026-05-22", status: "warning" },
-  { entity: "Seguro de carga — Apólice 8821", item: "Renovação", expires: "2026-09-01", status: "ok" },
-  { entity: "João Silva", item: "Verificação de antecedentes", expires: "2026-03-10", status: "critical" },
+export const ANALYSTS: AnalystData[] = [
+  {
+    id: "renata",
+    name: "Renata Moura",
+    role: "Analista Sênior",
+    avatar: "RM",
+    clients: ["Vivo Empresas", "Algar Telecom"],
+    stats: { abertas: 8, emExecucao: 14, concluidas: 127, ocorrencias: 3, slaAtRisk: 2 },
+  },
+  {
+    id: "marcos",
+    name: "Marcos Silva",
+    role: "Analista Pleno",
+    avatar: "MS",
+    clients: ["Claro NXT", "Oi Soluções"],
+    stats: { abertas: 5, emExecucao: 11, concluidas: 98, ocorrencias: 2, slaAtRisk: 1 },
+  },
+  {
+    id: "carla",
+    name: "Carla Santos",
+    role: "Analista Pleno",
+    avatar: "CS",
+    clients: ["TIM Live", "Embratel"],
+    stats: { abertas: 6, emExecucao: 9, concluidas: 112, ocorrencias: 4, slaAtRisk: 0 },
+  },
 ];
 
 export const CUSTOMERS = [
-  { name: "Vivo Empresas", segment: "Telecom B2B", orders30: 412, otif: 98.1, sla: "4h", contract: "MSA Master 2024", contact: "logistica@vivo.com.br" },
-  { name: "Claro NXT", segment: "Telecom B2B", orders30: 298, otif: 96.4, sla: "6h", contract: "MSA + SOW 12", contact: "ops@claro.com.br" },
-  { name: "TIM Live", segment: "Residencial", orders30: 521, otif: 97.8, sla: "Mesmo dia", contract: "Master 2025", contact: "delivery@tim.com.br" },
-  { name: "Algar Telecom", segment: "Telecom Regional", orders30: 187, otif: 95.0, sla: "24h", contract: "Anual 2025", contact: "operacoes@algar.com.br" },
-  { name: "Oi Soluções", segment: "Telecom B2B", orders30: 132, otif: 93.2, sla: "12h", contract: "MSA + 4 SOWs", contact: "compras@oi.com.br" },
-  { name: "Embratel", segment: "Enterprise", orders30: 224, otif: 99.0, sla: "8h", contract: "Master 2024", contact: "supply@embratel.com" },
-];
-
-export const HEATMAP = Array.from({ length: 7 * 24 }).map((_, i) => ({
-  d: Math.floor(i / 24),
-  h: i % 24,
-  v: Math.max(0, Math.round(40 + 30 * Math.sin(i / 5) + 25 * Math.cos(i / 9) + (Math.random() * 20 - 10))),
-}));
-
-export const AI_RECS = [
-  { icon: "sparkles", title: "Reroteirizar TRP-44216 via Anchieta", body: "Economiza 38 min vs Imigrantes; +R$ 220 de margem.", impact: "alta" },
-  { icon: "alert", title: "5 pedidos com risco de quebra de SLA", body: "Cluster na Zona Leste/SP — recomendado antecipar para a onda 2.", impact: "alta" },
-  { icon: "package", title: "Consolidar 12 pacotes pequenos", body: "Vivo + Claro — mesmo CEP de destino 13050. Estimativa −R$ 410 de custo.", impact: "média" },
-  { icon: "user", title: "Motorista Patrícia subutilizada", body: "Capacidade ociosa de 4h. Sugerir realocar 6 paradas da TRP-44213.", impact: "média" },
+  { name: "Vivo Empresas", segment: "Telecom B2B", orders30: 412, otif: 98.1, sla: "4h", contact: "logistica@vivo.com.br" },
+  { name: "Claro NXT", segment: "Telecom B2B", orders30: 298, otif: 96.4, sla: "6h", contact: "ops@claro.com.br" },
+  { name: "TIM Live", segment: "Residencial", orders30: 521, otif: 97.8, sla: "Mesmo dia", contact: "delivery@tim.com.br" },
+  { name: "Algar Telecom", segment: "Telecom Regional", orders30: 187, otif: 95.0, sla: "24h", contact: "operacoes@algar.com.br" },
+  { name: "Oi Soluções", segment: "Telecom B2B", orders30: 132, otif: 93.2, sla: "12h", contact: "compras@oi.com.br" },
+  { name: "Embratel", segment: "Enterprise", orders30: 224, otif: 99.0, sla: "8h", contact: "supply@embratel.com" },
 ];
