@@ -36,11 +36,8 @@ export function AppShell({ children, onAiOpen }: { children: React.ReactNode; on
     <div className="flex h-screen w-full overflow-hidden bg-background">
       {/* Sidebar */}
       <aside className="w-[220px] shrink-0 border-r border-sidebar-border bg-sidebar flex flex-col">
-        <div className="h-16 px-5 flex items-center gap-3 border-b border-sidebar-border">
+        <div className="h-16 px-5 flex items-center border-b border-sidebar-border">
           <img src={begurLogo} alt="Begur" className="h-7 brightness-0 invert" />
-          <div className="flex flex-col leading-tight">
-            <span className="text-[10px] uppercase tracking-[0.14em] text-sidebar-foreground">Control Tower</span>
-          </div>
         </div>
 
         <div className="px-3 pt-5 flex-1 flex flex-col">
