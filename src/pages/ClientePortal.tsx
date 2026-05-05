@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DELIVERIES, STAGE_META, DeliveryStage, TYPE_LABELS } from "@/data/mock";
 import { 
-  Package, MapPin, Clock, CheckCircle2, Search, Truck,
+  MapPin, Clock, CheckCircle2, Search, Truck,
   MessageSquare, Star, ArrowLeft, ChevronRight,
-  Plus, FileText, HelpCircle
+  Plus, FileText, HelpCircle, Warehouse
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import begurLogo from "@/assets/begur-logo.png";
@@ -332,7 +332,7 @@ export default function ClientePortal() {
                 <div className={cn("h-10 w-10 rounded-xl grid place-items-center shrink-0",
                   d.stage === "execucao" ? "bg-primary/10" : "bg-warning/10"
                 )}>
-                  {d.stage === "execucao" ? <Truck className="h-5 w-5 text-primary" /> : <Package className="h-5 w-5 text-warning" />}
+                  {d.stage === "execucao" ? <Truck className="h-5 w-5 text-primary" /> : <Warehouse className="h-5 w-5 text-warning" />}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
