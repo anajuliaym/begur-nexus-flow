@@ -1,6 +1,8 @@
 // Begur Control Tower — Modelo de dados centrado em Entrega (Case)
+// Serviços Begur: Cross Docking, Armazenagem, Separação/Kits, Movimentação/Positivação,
+// Logística Reversa, Distribuição Nacional, Gestão de Fretes, Rastreamento de Entregas
 
-export type DeliveryStage = "solicitacao" | "preparacao" | "execucao" | "retorno" | "concluida";
+export type DeliveryStage = "solicitacao" | "crossdocking" | "execucao" | "concluida";
 export type DeliveryType = "entrega" | "coleta" | "reentrega" | "remessa";
 export type OccurrenceType = "recusa" | "avaria" | "atraso" | "endereco" | "reentrega" | "equipamento";
 export type Severity = "low" | "medium" | "high";
@@ -9,10 +11,9 @@ export type RequestStatus = "pendente" | "em_analise" | "convertida" | "recusada
 
 export const STAGE_META: Record<DeliveryStage, { label: string; color: string; order: number }> = {
   solicitacao: { label: "Solicitação", color: "bg-info/15 text-info border-info/30", order: 0 },
-  preparacao: { label: "Preparação", color: "bg-warning/15 text-warning border-warning/30", order: 1 },
+  crossdocking: { label: "Cross-Docking", color: "bg-warning/15 text-warning border-warning/30", order: 1 },
   execucao: { label: "Em Execução", color: "bg-primary/15 text-primary border-primary/30", order: 2 },
-  retorno: { label: "Retorno", color: "bg-destructive/15 text-destructive border-destructive/30", order: 3 },
-  concluida: { label: "Concluída", color: "bg-success/15 text-success border-success/30", order: 4 },
+  concluida: { label: "Concluída", color: "bg-success/15 text-success border-success/30", order: 3 },
 };
 
 export const TYPE_LABELS: Record<DeliveryType, string> = {
