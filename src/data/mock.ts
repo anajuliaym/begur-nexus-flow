@@ -1,6 +1,8 @@
 // Begur Control Tower — Modelo de dados centrado em Entrega (Case)
+// Serviços Begur: Cross Docking, Armazenagem, Separação/Kits, Movimentação/Positivação,
+// Logística Reversa, Distribuição Nacional, Gestão de Fretes, Rastreamento de Entregas
 
-export type DeliveryStage = "solicitacao" | "preparacao" | "execucao" | "retorno" | "concluida";
+export type DeliveryStage = "solicitacao" | "crossdocking" | "execucao" | "concluida";
 export type DeliveryType = "entrega" | "coleta" | "reentrega" | "remessa";
 export type OccurrenceType = "recusa" | "avaria" | "atraso" | "endereco" | "reentrega" | "equipamento";
 export type Severity = "low" | "medium" | "high";
@@ -9,10 +11,9 @@ export type RequestStatus = "pendente" | "em_analise" | "convertida" | "recusada
 
 export const STAGE_META: Record<DeliveryStage, { label: string; color: string; order: number }> = {
   solicitacao: { label: "Solicitação", color: "bg-info/15 text-info border-info/30", order: 0 },
-  preparacao: { label: "Preparação", color: "bg-warning/15 text-warning border-warning/30", order: 1 },
+  crossdocking: { label: "Cross-Docking", color: "bg-warning/15 text-warning border-warning/30", order: 1 },
   execucao: { label: "Em Execução", color: "bg-primary/15 text-primary border-primary/30", order: 2 },
-  retorno: { label: "Retorno", color: "bg-destructive/15 text-destructive border-destructive/30", order: 3 },
-  concluida: { label: "Concluída", color: "bg-success/15 text-success border-success/30", order: 4 },
+  concluida: { label: "Concluída", color: "bg-success/15 text-success border-success/30", order: 3 },
 };
 
 export const TYPE_LABELS: Record<DeliveryType, string> = {
@@ -133,7 +134,7 @@ const drivers = [
   { name: "Lucas Almeida", phone: "+55 19 98765-4321" },
 ];
 
-const stages: DeliveryStage[] = ["solicitacao", "solicitacao", "preparacao", "preparacao", "execucao", "execucao", "execucao", "retorno", "concluida", "concluida", "concluida", "concluida"];
+const stages: DeliveryStage[] = ["solicitacao", "solicitacao", "crossdocking", "crossdocking", "execucao", "execucao", "execucao", "execucao", "concluida", "concluida", "concluida", "concluida"];
 const types: DeliveryType[] = ["entrega", "entrega", "entrega", "coleta", "reentrega", "remessa"];
 
 function rand<T>(arr: T[], i: number) { return arr[i % arr.length]; }
@@ -144,23 +145,21 @@ function makeTimeline(stage: DeliveryStage, i: number): TimelineEvent[] {
   ];
   if (stage === "solicitacao") return base;
   base.push(
-    { time: "09:30", title: "Dados conferidos", description: "Endereço e itens validados pelo analista", type: "analyst" },
+    { time: "09:30", title: "Cross-docking — Análise de frete", description: "Cotação e conferência de carga no CD", type: "analyst" },
+    { time: "10:00", title: "Consolidação concluída", description: "Carga consolidada e conferida", type: "system" },
     { time: "10:15", title: "Roteirização concluída", description: `Incluída na viagem TRP-${44200 + i}`, type: "system" },
   );
-  if (stage === "preparacao") return base;
+  if (stage === "crossdocking") return base;
   base.push(
     { time: "11:00", title: "Saiu para entrega", description: "Motorista confirmou partida do CD", type: "driver" },
     { time: "13:42", title: "Chegou ao local", description: "GPS confirmado no endereço", type: "driver" },
   );
   if (stage === "execucao") return base;
-  if (stage === "retorno") {
-    base.push({ time: "14:00", title: "Tentativa sem sucesso", description: "Cliente ausente no local", type: "exception" });
-    return base;
-  }
   base.push(
     { time: "14:05", title: "Entregue com sucesso", description: "Recebido por João Pedro", type: "driver" },
     { time: "14:10", title: "Comprovante registrado", description: "Foto e assinatura digital", type: "system" },
-    { time: "15:00", title: "Caso encerrado", description: "Feedback positivo do cliente", type: "analyst" },
+    { time: "14:30", title: "Feedback do cliente", description: "Avaliação positiva registrada", type: "client" },
+    { time: "15:00", title: "Caso encerrado", description: "Concluído pelo analista", type: "analyst" },
   );
   return base;
 }
@@ -170,7 +169,7 @@ export const DELIVERIES: Delivery[] = Array.from({ length: 32 }).map((_, i) => {
   const [city, uf] = rand(cities, i * 3);
   const stage = rand(stages, i);
   const type = rand(types, i);
-  const driver = (stage === "execucao" || stage === "retorno" || stage === "concluida") ? rand(drivers, i) : undefined;
+  const driver = (stage === "execucao" || stage === "concluida") ? rand(drivers, i) : undefined;
   const slaStatus = i % 11 === 0 ? "breached" : i % 7 === 0 ? "at_risk" : "on_track";
 
   return {
@@ -196,7 +195,7 @@ export const DELIVERIES: Delivery[] = Array.from({ length: 32 }).map((_, i) => {
     value: 480 + (i * 137) % 4200,
     analystId: ["renata", "marcos", "carla"][i % 3],
     timeline: makeTimeline(stage, i),
-    occurrences: stage === "retorno" ? [`OCR-${1100 + i}`] : [],
+    occurrences: [],
     recipientName: stage === "concluida" ? "João Pedro" : undefined,
     feedback: stage === "concluida" && i % 3 === 0 ? "Entrega rápida e sem problemas. Obrigado!" : undefined,
   };

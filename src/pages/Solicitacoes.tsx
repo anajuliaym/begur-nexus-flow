@@ -53,29 +53,29 @@ const AI_EXTRACTIONS: Record<string, {
     fields: [
       { label: "Cliente", value: "Heineken", confidence: 99 },
       { label: "Tipo", value: "Coleta", confidence: 96 },
-      { label: "Produto", value: "Cerveja Heineken 600ml (cx 12un)", confidence: 98 },
-      { label: "Quantidade", value: "120 caixas", confidence: 97 },
+      { label: "Equipamento", value: "Freezer Expositor Metalfrio VF50F", confidence: 98 },
+      { label: "Quantidade", value: "15 unidades", confidence: 97 },
       { label: "Local de coleta", value: "CD Jacareí — Rod. Presidente Dutra, km 160", confidence: 92 },
       { label: "Janela", value: "08:00 às 12:00", confidence: 95 },
       { label: "Destino", value: "CD Begur Barueri", confidence: 99 },
       { label: "Contato", value: "Fernando Alves (11) 99887-2233", confidence: 88 },
     ],
-    suggestions: ["Verificar disponibilidade de veículo refrigerado", "Confirmar janela de coleta com CD Jacareí"],
+    suggestions: ["Verificar disponibilidade de veículo com plataforma elevatória", "Confirmar janela de coleta com CD Jacareí"],
   },
   "SOL-0002": {
     confidence: 87,
     status: "pendente",
     fields: [
       { label: "Cliente", value: "Bacio di Latte", confidence: 99 },
-      { label: "Tipo", value: "Entrega", confidence: 92 },
-      { label: "Produto 1", value: "Gelato sortido 500ml", confidence: 85 },
-      { label: "Quantidade 1", value: "30 caixas", confidence: 90 },
-      { label: "Produto 2", value: "Picolé premium", confidence: 78, edited: false },
-      { label: "Quantidade 2", value: "15 caixas", confidence: 88 },
+      { label: "Tipo", value: "Entrega + Instalação", confidence: 92 },
+      { label: "Equipamento 1", value: "Expositor Refrigerado Froneri EF300", confidence: 85 },
+      { label: "Quantidade 1", value: "2 unidades", confidence: 90 },
+      { label: "Equipamento 2", value: "Freezer Ilha Metalfrio NF40", confidence: 78, edited: false },
+      { label: "Quantidade 2", value: "1 unidade", confidence: 88 },
       { label: "Destino", value: "Rua Oscar Freire, 890 — Jardins/SP", confidence: 95 },
       { label: "Prazo", value: "Amanhã até 10h", confidence: 82 },
     ],
-    suggestions: ["Confirmar sabores do picolé premium", "Verificar temperatura: -18°C (congelado)"],
+    suggestions: ["Confirmar necessidade de instalação no local", "Verificar equipe de montagem disponível"],
   },
   "SOL-0003": {
     confidence: 96,
@@ -83,14 +83,14 @@ const AI_EXTRACTIONS: Record<string, {
     fields: [
       { label: "Cliente", value: "Seara", confidence: 99 },
       { label: "Tipo", value: "Entrega", confidence: 98 },
-      { label: "Produto", value: "Empanado Seara 400g", confidence: 99 },
-      { label: "Quantidade", value: "200 caixas", confidence: 99 },
-      { label: "Temperatura", value: "-18°C (congelado)", confidence: 97 },
+      { label: "Equipamento", value: "Freezer Horizontal Metalfrio DA420", confidence: 99 },
+      { label: "Quantidade", value: "20 unidades", confidence: 99 },
       { label: "Destino", value: "5 pontos na Grande SP", confidence: 94 },
       { label: "Data", value: "06/05/2026", confidence: 96 },
       { label: "Pedido", value: "PED-88431", confidence: 99 },
+      { label: "Veículo", value: "Necessário plataforma elevatória", confidence: 93 },
     ],
-    suggestions: ["Verificar 5 veículos refrigerados disponíveis"],
+    suggestions: ["Verificar 5 veículos com plataforma disponíveis"],
   },
   "SOL-0004": {
     confidence: 98,
@@ -98,11 +98,11 @@ const AI_EXTRACTIONS: Record<string, {
     fields: [
       { label: "Cliente", value: "Nestlé", confidence: 99 },
       { label: "Tipo", value: "Remessa (Transferência)", confidence: 97 },
-      { label: "Produto", value: "Nescafé Dolce Gusto cx", confidence: 99 },
-      { label: "Quantidade", value: "80 caixas", confidence: 99 },
+      { label: "Equipamento", value: "Freezer Vertical Nestlé FV120", confidence: 99 },
+      { label: "Quantidade", value: "8 unidades", confidence: 99 },
       { label: "NF", value: "44521", confidence: 99 },
-      { label: "Peso", value: "960kg", confidence: 98 },
-      { label: "Pallets", value: "4", confidence: 97 },
+      { label: "Peso", value: "1.200kg", confidence: 98 },
+      { label: "Embalagem", value: "Individual com proteção", confidence: 97 },
     ],
     suggestions: [],
   },
@@ -112,11 +112,11 @@ const AI_EXTRACTIONS: Record<string, {
     fields: [
       { label: "Cliente", value: "Natural One", confidence: 99 },
       { label: "Tipo", value: "Entrega", confidence: 99 },
-      { label: "Produto", value: "Suco Natural One 900ml (3 sabores)", confidence: 99 },
-      { label: "Quantidade", value: "150 caixas (50/sabor)", confidence: 99 },
+      { label: "Equipamento", value: "Refrigerador Vertical Metalfrio VB28", confidence: 99 },
+      { label: "Quantidade", value: "12 unidades", confidence: 99 },
       { label: "Destino", value: "CD Atacadão Interlagos", confidence: 99 },
-      { label: "Temperatura", value: "Refrigerado (2-8°C)", confidence: 99 },
       { label: "Prazo", value: "D+2", confidence: 99 },
+      { label: "Observação", value: "Campanha promocional em PDVs", confidence: 96 },
     ],
     suggestions: [],
   },
@@ -126,7 +126,7 @@ const AI_EXTRACTIONS: Record<string, {
     fields: [
       { label: "Cliente", value: "Metalfrio T1", confidence: 99 },
       { label: "Tipo", value: "Entrega + Instalação", confidence: 84 },
-      { label: "Produto", value: "Freezer Metalfrio VF55", confidence: 96 },
+      { label: "Equipamento", value: "Freezer Metalfrio VF55", confidence: 96 },
       { label: "Quantidade", value: "1 unidade", confidence: 92 },
       { label: "Destino", value: "Av. Norte Sul, 1200 — Campinas/SP", confidence: 95 },
       { label: "Observação", value: "Precisa 2 ajudantes para descarga", confidence: 86 },
@@ -140,9 +140,9 @@ const AI_EXTRACTIONS: Record<string, {
     fields: [
       { label: "Cliente", value: "Solar", confidence: 99 },
       { label: "Tipo", value: "Cotação comercial", confidence: 88 },
+      { label: "Equipamento", value: "Ilha Refrigerada Solar IR200", confidence: 96 },
+      { label: "Volume", value: "30 ilhas/semana", confidence: 94 },
       { label: "Rota", value: "Fortaleza/CE → Teresina/PI", confidence: 96 },
-      { label: "Volume", value: "3 carretas/semana", confidence: 94 },
-      { label: "Temperatura", value: "Ambiente", confidence: 92 },
     ],
     suggestions: ["Não é uma solicitação operacional — encaminhar ao comercial"],
   },
@@ -152,10 +152,10 @@ const AI_EXTRACTIONS: Record<string, {
     fields: [
       { label: "Cliente", value: "Froneri", confidence: 100 },
       { label: "Tipo", value: "Reentrega", confidence: 100 },
-      { label: "Produto", value: "Sorvete Froneri 2L", confidence: 100 },
-      { label: "Quantidade", value: "45 caixas", confidence: 100 },
+      { label: "Equipamento", value: "Expositor Refrigerado Froneri EF300", confidence: 100 },
+      { label: "Quantidade", value: "2 unidades", confidence: 100 },
       { label: "Destino", value: "Pão de Açúcar Moema — São Paulo/SP", confidence: 100 },
-      { label: "Temperatura", value: "-18°C (congelado)", confidence: 100 },
+      { label: "Observação", value: "Revisados e testados no CD — funcionamento OK", confidence: 100 },
       { label: "Prazo", value: "Mesmo dia", confidence: 100 },
     ],
     suggestions: [],
@@ -283,7 +283,7 @@ export default function Solicitacoes() {
               <textarea
                 value={newForm.items}
                 onChange={e => setNewForm(f => ({ ...f, items: e.target.value }))}
-                placeholder={"45 x Sorvete Froneri 2L\n30 x Gelato Bacio 500ml"}
+                placeholder={"2 x Expositor Refrigerado Froneri EF300\n1 x Freezer Ilha Metalfrio NF40"}
                 rows={4}
                 className="w-full bg-surface-2 border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
               />

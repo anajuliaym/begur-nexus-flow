@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DELIVERIES, STAGE_META, DeliveryStage, TYPE_LABELS } from "@/data/mock";
 import { 
-  Package, MapPin, Clock, CheckCircle2, Search, Truck,
+  MapPin, Clock, CheckCircle2, Search, Truck,
   MessageSquare, Star, ArrowLeft, ChevronRight,
-  Plus, FileText, HelpCircle
+  Plus, FileText, HelpCircle, Warehouse
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import begurLogo from "@/assets/begur-logo.png";
@@ -17,9 +17,8 @@ const clientDeliveries = DELIVERIES.filter(d => d.client === CLIENT_NAME || d.cl
 
 const TRACKING_STEPS = [
   { label: "Solicitação recebida", time: "08:12", done: true },
-  { label: "Pedido em preparação", time: "09:30", done: true },
+  { label: "Cross-docking / Análise de frete", time: "09:30", done: true },
   { label: "Saiu para entrega", time: "11:00", done: true },
-  { label: "Chegou ao local", time: "—", done: false },
   { label: "Entregue", time: "—", done: false },
 ];
 
@@ -35,7 +34,7 @@ export default function ClientePortal() {
 
   // Tracking detail
   if (view === "tracking" && selected) {
-    const currentStep = selected.stage === "solicitacao" ? 0 : selected.stage === "preparacao" ? 1 : selected.stage === "execucao" ? 2 : selected.stage === "retorno" ? 3 : 4;
+    const currentStep = selected.stage === "solicitacao" ? 0 : selected.stage === "crossdocking" ? 1 : selected.stage === "execucao" ? 2 : 3;
     
     return (
       <div className="max-w-[900px] mx-auto p-6 space-y-6">
@@ -138,7 +137,7 @@ export default function ClientePortal() {
               <h3 className="text-sm font-semibold">Itens</h3>
               {selected.items.map((item, i) => (
                 <div key={i} className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-2"><Package className="h-3.5 w-3.5 text-muted-foreground" />{item.name}</span>
+                  <span className="flex items-center gap-2"><Truck className="h-3.5 w-3.5 text-muted-foreground" />{item.name}</span>
                   <span className="font-semibold tnum">{item.qty}×</span>
                 </div>
               ))}
@@ -333,7 +332,7 @@ export default function ClientePortal() {
                 <div className={cn("h-10 w-10 rounded-xl grid place-items-center shrink-0",
                   d.stage === "execucao" ? "bg-primary/10" : "bg-warning/10"
                 )}>
-                  {d.stage === "execucao" ? <Truck className="h-5 w-5 text-primary" /> : <Package className="h-5 w-5 text-warning" />}
+                  {d.stage === "execucao" ? <Truck className="h-5 w-5 text-primary" /> : <Warehouse className="h-5 w-5 text-warning" />}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">

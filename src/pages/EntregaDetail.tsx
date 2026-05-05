@@ -1,14 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { DELIVERIES, STAGE_META, TYPE_LABELS, DeliveryStage } from "@/data/mock";
 import { Btn, SlaBadge } from "@/components/ui-kit";
-import { ArrowLeft, Package, MapPin, User, Phone, Clock, CheckCircle2, AlertTriangle, Truck, FileText, MessageSquare } from "lucide-react";
+import { ArrowLeft, MapPin, User, Phone, Clock, CheckCircle2, AlertTriangle, Truck, FileText, MessageSquare, Warehouse, GitBranch } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const WORKFLOW_STAGES: { key: DeliveryStage; label: string; icon: any }[] = [
   { key: "solicitacao", label: "Solicitação", icon: FileText },
-  { key: "preparacao", label: "Preparação", icon: Package },
+  { key: "crossdocking", label: "Cross-Docking", icon: Warehouse },
   { key: "execucao", label: "Execução", icon: Truck },
-  { key: "retorno", label: "Retorno", icon: MessageSquare },
   { key: "concluida", label: "Concluída", icon: CheckCircle2 },
 ];
 
@@ -49,9 +48,8 @@ export default function EntregaDetail() {
           <p className="text-sm text-muted-foreground mt-0.5">{delivery.client} · Criado {delivery.created}</p>
         </div>
         <div className="flex gap-2">
-          {delivery.stage === "solicitacao" && <Btn variant="primary">Avançar para Preparação</Btn>}
-          {delivery.stage === "preparacao" && <Btn variant="primary">Despachar</Btn>}
-          {delivery.stage === "retorno" && <Btn variant="primary">Tratar exceção</Btn>}
+          {delivery.stage === "solicitacao" && <Btn variant="primary">Enviar ao Cross-Docking</Btn>}
+          {delivery.stage === "crossdocking" && <Btn variant="primary">Despachar</Btn>}
           {delivery.stage === "execucao" && <Btn variant="outline">Registrar ocorrência</Btn>}
         </div>
       </div>
@@ -87,6 +85,44 @@ export default function EntregaDetail() {
         </div>
       </div>
 
+      {/* Cross-docking info (when in crossdocking stage) */}
+      {delivery.stage === "crossdocking" && (
+        <div className="panel border-warning/30">
+          <div className="panel-header">
+            <span className="text-sm font-semibold text-warning flex items-center gap-1.5"><Warehouse className="h-4 w-4" /> Cross-Docking — Análise de Frete</span>
+          </div>
+          <div className="p-5 grid grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Conferência</div>
+              <div className="text-sm font-medium text-success">✓ Carga conferida</div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Consolidação</div>
+              <div className="text-sm font-medium text-warning">Em andamento</div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Roteirização</div>
+              <div className="flex items-center gap-1.5">
+                <GitBranch className="h-3.5 w-3.5 text-primary" />
+                <span className="text-sm font-medium text-primary">Rota otimizada</span>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Tipo de Frete</div>
+              <div className="text-sm">Fracionado</div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Veículo</div>
+              <div className="text-sm">Truck c/ plataforma</div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Cotação</div>
+              <div className="text-sm font-semibold tnum">R$ {delivery.value.toLocaleString("pt-BR")}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-12 gap-5">
         {/* Main content */}
         <div className="col-span-8 space-y-5">
@@ -119,14 +155,14 @@ export default function EntregaDetail() {
           {/* Items */}
           <div className="panel">
             <div className="panel-header">
-              <span className="text-sm font-semibold">Itens</span>
+              <span className="text-sm font-semibold">Equipamentos</span>
             </div>
             <div className="divide-y divide-border">
               {delivery.items.map((item, i) => (
                 <div key={i} className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-3">
                     <div className="h-9 w-9 rounded-xl bg-primary/10 grid place-items-center">
-                      <Package className="h-4 w-4 text-primary" />
+                      <Truck className="h-4 w-4 text-primary" />
                     </div>
                     <span className="text-sm">{item.name}</span>
                   </div>
@@ -152,10 +188,8 @@ export default function EntregaDetail() {
 
         {/* Sidebar info */}
         <div className="col-span-4 space-y-4">
-          {/* Delivery info card */}
           <div className="panel p-5 space-y-4">
             <h3 className="text-sm font-semibold">Informações</h3>
-
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
@@ -190,7 +224,6 @@ export default function EntregaDetail() {
             </div>
           </div>
 
-          {/* Driver */}
           {delivery.driver && (
             <div className="panel p-5 space-y-3">
               <h3 className="text-sm font-semibold">Motorista</h3>
@@ -208,7 +241,6 @@ export default function EntregaDetail() {
             </div>
           )}
 
-          {/* Client */}
           <div className="panel p-5 space-y-3">
             <h3 className="text-sm font-semibold">Cliente</h3>
             <div className="text-sm font-medium">{delivery.client}</div>
@@ -218,7 +250,6 @@ export default function EntregaDetail() {
             )}
           </div>
 
-          {/* Value */}
           <div className="panel p-5">
             <div className="stat-label">Valor</div>
             <div className="text-xl font-semibold mt-1 tnum">R$ {delivery.value.toLocaleString("pt-BR")}</div>

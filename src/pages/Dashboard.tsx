@@ -37,13 +37,12 @@ export default function Dashboard() {
       </div>
 
       {/* KPI Strip */}
-      <div className="grid grid-cols-6 gap-4">
+      <div className="grid grid-cols-5 gap-4">
         <Kpi label="Solicitações" value={pendingRequests.length} tone="info" icon={Inbox} trend="+3 hoje" />
         <Kpi label="Novas" value={stageCounts("solicitacao")} tone="info" icon={Clock} />
-        <Kpi label="Preparação" value={stageCounts("preparacao")} tone="warning" icon={Package} />
-        <Kpi label="Em execução" value={stageCounts("execucao")} tone="primary" icon={TrendingUp} />
+        <Kpi label="Cross-Docking" value={stageCounts("crossdocking")} tone="warning" icon={TrendingUp} />
+        <Kpi label="Em execução" value={stageCounts("execucao")} tone="primary" icon={Package} />
         <Kpi label="Concluídas" value={stageCounts("concluida")} tone="success" icon={CheckCircle2} trend="+8 hoje" />
-        <Kpi label="Ocorrências" value={myOccurrences.filter(o => o.status !== "resolvida").length} tone="destructive" icon={AlertTriangle} />
       </div>
 
       {/* Pending requests banner */}
@@ -75,7 +74,7 @@ export default function Dashboard() {
               Ver todas <ChevronRight className="h-3 w-3" />
             </button>
           </div>
-          {(["solicitacao", "preparacao", "execucao", "retorno"] as DeliveryStage[]).map(stage => {
+          {(["solicitacao", "crossdocking", "execucao"] as DeliveryStage[]).map(stage => {
             const items = myDeliveries.filter(d => d.stage === stage);
             if (items.length === 0) return null;
             const meta = STAGE_META[stage];

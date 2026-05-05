@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 type DriverView = "list" | "detail" | "navigation";
 
 const driverDeliveries = DELIVERIES.filter(d => d.driver === "Carlos Mendes" && d.stage === "execucao")
-  .concat(DELIVERIES.filter(d => d.driver === "Carlos Mendes" && d.stage === "preparacao").slice(0, 2));
+  .concat(DELIVERIES.filter(d => d.driver === "Carlos Mendes" && d.stage === "crossdocking").slice(0, 2));
 
 export default function EntregadorApp() {
   const navigate = useNavigate();
