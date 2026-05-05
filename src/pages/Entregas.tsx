@@ -8,9 +8,8 @@ import { cn } from "@/lib/utils";
 const STAGE_TABS: { key: DeliveryStage | "all"; label: string }[] = [
   { key: "all", label: "Todas" },
   { key: "solicitacao", label: "Solicitação" },
-  { key: "preparacao", label: "Preparação" },
+  { key: "crossdocking", label: "Cross-Docking" },
   { key: "execucao", label: "Em execução" },
-  { key: "retorno", label: "Retorno" },
   { key: "concluida", label: "Concluída" },
 ];
 
