@@ -283,7 +283,7 @@ export default function Solicitacoes() {
               <textarea
                 value={newForm.items}
                 onChange={e => setNewForm(f => ({ ...f, items: e.target.value }))}
-                placeholder={"45 x Sorvete Froneri 2L\n30 x Gelato Bacio 500ml"}
+                placeholder={"2 x Expositor Refrigerado Froneri EF300\n1 x Freezer Ilha Metalfrio NF40"}
                 rows={4}
                 className="w-full bg-surface-2 border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
               />
