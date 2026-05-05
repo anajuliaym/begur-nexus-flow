@@ -18,6 +18,7 @@ const clientDeliveries = DELIVERIES.filter(d => d.client === CLIENT_NAME || d.cl
 const TRACKING_STEPS = [
   { label: "Solicitação recebida", time: "08:12", done: true },
   { label: "Cross-docking / Análise de frete", time: "09:30", done: true },
+  { label: "Preparação da carga", time: "10:45", done: true },
   { label: "Saiu para entrega", time: "11:00", done: true },
   { label: "Entregue", time: "—", done: false },
 ];
@@ -34,7 +35,7 @@ export default function ClientePortal() {
 
   // Tracking detail
   if (view === "tracking" && selected) {
-    const currentStep = selected.stage === "solicitacao" ? 0 : selected.stage === "crossdocking" ? 1 : selected.stage === "execucao" ? 2 : 3;
+    const currentStep = selected.stage === "solicitacao" ? 0 : selected.stage === "crossdocking" ? 1 : selected.stage === "preparacao" ? 2 : selected.stage === "execucao" ? 3 : 4;
     
     return (
       <div className="max-w-[900px] mx-auto p-6 space-y-6">

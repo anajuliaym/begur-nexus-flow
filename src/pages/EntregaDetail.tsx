@@ -1,12 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { DELIVERIES, STAGE_META, TYPE_LABELS, DeliveryStage } from "@/data/mock";
 import { Btn, SlaBadge } from "@/components/ui-kit";
-import { ArrowLeft, MapPin, User, Phone, Clock, CheckCircle2, AlertTriangle, Truck, FileText, MessageSquare, Warehouse, GitBranch } from "lucide-react";
+import { ArrowLeft, MapPin, User, Phone, Clock, CheckCircle2, AlertTriangle, Truck, FileText, MessageSquare, Warehouse, GitBranch, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const WORKFLOW_STAGES: { key: DeliveryStage; label: string; icon: any }[] = [
   { key: "solicitacao", label: "Solicitação", icon: FileText },
   { key: "crossdocking", label: "Cross-Docking", icon: Warehouse },
+  { key: "preparacao", label: "Preparação", icon: ClipboardList },
   { key: "execucao", label: "Execução", icon: Truck },
   { key: "concluida", label: "Concluída", icon: CheckCircle2 },
 ];
@@ -49,7 +50,8 @@ export default function EntregaDetail() {
         </div>
         <div className="flex gap-2">
           {delivery.stage === "solicitacao" && <Btn variant="primary">Enviar ao Cross-Docking</Btn>}
-          {delivery.stage === "crossdocking" && <Btn variant="primary">Despachar</Btn>}
+          {delivery.stage === "crossdocking" && <Btn variant="primary">Preparar carga</Btn>}
+          {delivery.stage === "preparacao" && <Btn variant="primary">Despachar</Btn>}
           {delivery.stage === "execucao" && <Btn variant="outline">Registrar ocorrência</Btn>}
         </div>
       </div>
