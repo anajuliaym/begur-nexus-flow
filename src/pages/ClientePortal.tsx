@@ -137,7 +137,7 @@ export default function ClientePortal() {
               <h3 className="text-sm font-semibold">Itens</h3>
               {selected.items.map((item, i) => (
                 <div key={i} className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-2"><Package className="h-3.5 w-3.5 text-muted-foreground" />{item.name}</span>
+                  <span className="flex items-center gap-2"><Truck className="h-3.5 w-3.5 text-muted-foreground" />{item.name}</span>
                   <span className="font-semibold tnum">{item.qty}×</span>
                 </div>
               ))}
