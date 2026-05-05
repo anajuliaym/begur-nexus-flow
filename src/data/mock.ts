@@ -134,7 +134,7 @@ const drivers = [
   { name: "Lucas Almeida", phone: "+55 19 98765-4321" },
 ];
 
-const stages: DeliveryStage[] = ["solicitacao", "solicitacao", "preparacao", "preparacao", "execucao", "execucao", "execucao", "retorno", "concluida", "concluida", "concluida", "concluida"];
+const stages: DeliveryStage[] = ["solicitacao", "solicitacao", "crossdocking", "crossdocking", "execucao", "execucao", "execucao", "execucao", "concluida", "concluida", "concluida", "concluida"];
 const types: DeliveryType[] = ["entrega", "entrega", "entrega", "coleta", "reentrega", "remessa"];
 
 function rand<T>(arr: T[], i: number) { return arr[i % arr.length]; }
@@ -145,23 +145,21 @@ function makeTimeline(stage: DeliveryStage, i: number): TimelineEvent[] {
   ];
   if (stage === "solicitacao") return base;
   base.push(
-    { time: "09:30", title: "Dados conferidos", description: "Endereço e itens validados pelo analista", type: "analyst" },
+    { time: "09:30", title: "Cross-docking — Análise de frete", description: "Cotação e conferência de carga no CD", type: "analyst" },
+    { time: "10:00", title: "Consolidação concluída", description: "Carga consolidada e conferida", type: "system" },
     { time: "10:15", title: "Roteirização concluída", description: `Incluída na viagem TRP-${44200 + i}`, type: "system" },
   );
-  if (stage === "preparacao") return base;
+  if (stage === "crossdocking") return base;
   base.push(
     { time: "11:00", title: "Saiu para entrega", description: "Motorista confirmou partida do CD", type: "driver" },
     { time: "13:42", title: "Chegou ao local", description: "GPS confirmado no endereço", type: "driver" },
   );
   if (stage === "execucao") return base;
-  if (stage === "retorno") {
-    base.push({ time: "14:00", title: "Tentativa sem sucesso", description: "Cliente ausente no local", type: "exception" });
-    return base;
-  }
   base.push(
     { time: "14:05", title: "Entregue com sucesso", description: "Recebido por João Pedro", type: "driver" },
     { time: "14:10", title: "Comprovante registrado", description: "Foto e assinatura digital", type: "system" },
-    { time: "15:00", title: "Caso encerrado", description: "Feedback positivo do cliente", type: "analyst" },
+    { time: "14:30", title: "Feedback do cliente", description: "Avaliação positiva registrada", type: "client" },
+    { time: "15:00", title: "Caso encerrado", description: "Concluído pelo analista", type: "analyst" },
   );
   return base;
 }
