@@ -9,6 +9,7 @@ const STAGE_TABS: { key: DeliveryStage | "all"; label: string }[] = [
   { key: "all", label: "Todas" },
   { key: "solicitacao", label: "Solicitação" },
   { key: "crossdocking", label: "Cross-Docking" },
+  { key: "preparacao", label: "Preparação" },
   { key: "execucao", label: "Em execução" },
   { key: "concluida", label: "Concluída" },
 ];
