@@ -169,7 +169,7 @@ export const DELIVERIES: Delivery[] = Array.from({ length: 32 }).map((_, i) => {
   const [city, uf] = rand(cities, i * 3);
   const stage = rand(stages, i);
   const type = rand(types, i);
-  const driver = (stage === "execucao" || stage === "retorno" || stage === "concluida") ? rand(drivers, i) : undefined;
+  const driver = (stage === "execucao" || stage === "concluida") ? rand(drivers, i) : undefined;
   const slaStatus = i % 11 === 0 ? "breached" : i % 7 === 0 ? "at_risk" : "on_track";
 
   return {
@@ -195,7 +195,7 @@ export const DELIVERIES: Delivery[] = Array.from({ length: 32 }).map((_, i) => {
     value: 480 + (i * 137) % 4200,
     analystId: ["renata", "marcos", "carla"][i % 3],
     timeline: makeTimeline(stage, i),
-    occurrences: stage === "retorno" ? [`OCR-${1100 + i}`] : [],
+    occurrences: [],
     recipientName: stage === "concluida" ? "João Pedro" : undefined,
     feedback: stage === "concluida" && i % 3 === 0 ? "Entrega rápida e sem problemas. Obrigado!" : undefined,
   };
