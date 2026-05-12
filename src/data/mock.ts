@@ -194,23 +194,201 @@ const equip = [
   "Expositor Refrigerado Froneri EF300", "Freezer Vertical Nestlé FV120", "Ilha Refrigerada Solar IR200",
 ];
 
-const drivers = [
-  { name: "Carlos Mendes", phone: "+55 11 99821-4410" },
-  { name: "Ana Ribeiro", phone: "+55 11 98832-1122" },
-  { name: "João Silva", phone: "+55 21 97654-3210" },
-  { name: "Marcos Pereira", phone: "+55 41 99876-5432" },
-  { name: "Patrícia Souza", phone: "+55 11 91234-5678" },
-  { name: "Lucas Almeida", phone: "+55 19 98765-4321" },
+// Agregados (motoristas terceirizados) — usados pelo módulo Gestão de Agregados
+export interface AgregadoDoc {
+  type: "CNH" | "ANTT" | "RNTRC" | "ASO" | "CRLV" | "Seguro";
+  number: string;
+  expiresAt: string; // ISO date
+  status: "ok" | "vencendo" | "vencido";
+}
+
+export interface Agregado {
+  id: string;
+  name: string;
+  phone: string;
+  cpf: string;
+  bank: { bank: string; agency: string; account: string };
+  vehiclePlate: string;
+  docs: AgregadoDoc[];
+  rating: number; // 0-5
+  trips30: number;
+}
+
+export const AGREGADOS: Agregado[] = [
+  {
+    id: "AGR-001", name: "Carlos Mendes", phone: "+55 11 99821-4410", cpf: "123.456.789-00",
+    bank: { bank: "Itaú", agency: "0432", account: "12345-6" }, vehiclePlate: "RGB-4A12",
+    rating: 4.8, trips30: 42,
+    docs: [
+      { type: "CNH", number: "04321987654", expiresAt: "2027-03-15", status: "ok" },
+      { type: "ANTT", number: "RNTRC-7821345", expiresAt: "2026-06-10", status: "vencendo" },
+      { type: "ASO", number: "ASO-2025-0421", expiresAt: "2026-05-28", status: "vencendo" },
+      { type: "CRLV", number: "CRLV-RGB4A12", expiresAt: "2026-12-31", status: "ok" },
+      { type: "Seguro", number: "APL-994321", expiresAt: "2026-09-15", status: "ok" },
+    ],
+  },
+  {
+    id: "AGR-002", name: "Ana Ribeiro", phone: "+55 11 98832-1122", cpf: "234.567.890-11",
+    bank: { bank: "Bradesco", agency: "1234", account: "56789-0" }, vehiclePlate: "FGT-2B33",
+    rating: 4.9, trips30: 38,
+    docs: [
+      { type: "CNH", number: "08765432109", expiresAt: "2028-11-20", status: "ok" },
+      { type: "ANTT", number: "RNTRC-8843211", expiresAt: "2027-02-12", status: "ok" },
+      { type: "ASO", number: "ASO-2026-0118", expiresAt: "2027-01-18", status: "ok" },
+      { type: "CRLV", number: "CRLV-FGT2B33", expiresAt: "2026-08-10", status: "ok" },
+      { type: "Seguro", number: "APL-883210", expiresAt: "2026-05-01", status: "vencido" },
+    ],
+  },
+  {
+    id: "AGR-003", name: "João Silva", phone: "+55 21 97654-3210", cpf: "345.678.901-22",
+    bank: { bank: "Santander", agency: "5678", account: "11223-4" }, vehiclePlate: "JKL-9M88",
+    rating: 4.6, trips30: 31,
+    docs: [
+      { type: "CNH", number: "01234567890", expiresAt: "2026-05-05", status: "vencendo" },
+      { type: "ANTT", number: "RNTRC-9921100", expiresAt: "2027-08-20", status: "ok" },
+      { type: "ASO", number: "ASO-2025-1102", expiresAt: "2026-11-02", status: "ok" },
+      { type: "CRLV", number: "CRLV-JKL9M88", expiresAt: "2026-07-22", status: "ok" },
+      { type: "Seguro", number: "APL-771122", expiresAt: "2027-03-30", status: "ok" },
+    ],
+  },
+  {
+    id: "AGR-004", name: "Marcos Pereira", phone: "+55 41 99876-5432", cpf: "456.789.012-33",
+    bank: { bank: "Caixa", agency: "9012", account: "33445-7" }, vehiclePlate: "MNB-7C44",
+    rating: 4.4, trips30: 27,
+    docs: [
+      { type: "CNH", number: "09876543210", expiresAt: "2027-09-10", status: "ok" },
+      { type: "ANTT", number: "RNTRC-6671423", expiresAt: "2026-04-28", status: "vencido" },
+      { type: "ASO", number: "ASO-2026-0210", expiresAt: "2027-02-10", status: "ok" },
+      { type: "CRLV", number: "CRLV-MNB7C44", expiresAt: "2026-10-05", status: "ok" },
+      { type: "Seguro", number: "APL-664210", expiresAt: "2026-12-22", status: "ok" },
+    ],
+  },
+  {
+    id: "AGR-005", name: "Patrícia Souza", phone: "+55 11 91234-5678", cpf: "567.890.123-44",
+    bank: { bank: "Nubank", agency: "0001", account: "98765-4" }, vehiclePlate: "PQR-3D77",
+    rating: 5.0, trips30: 51,
+    docs: [
+      { type: "CNH", number: "07654321098", expiresAt: "2028-01-15", status: "ok" },
+      { type: "ANTT", number: "RNTRC-5530988", expiresAt: "2027-11-05", status: "ok" },
+      { type: "ASO", number: "ASO-2026-0301", expiresAt: "2027-03-01", status: "ok" },
+      { type: "CRLV", number: "CRLV-PQR3D77", expiresAt: "2027-04-18", status: "ok" },
+      { type: "Seguro", number: "APL-553098", expiresAt: "2026-08-19", status: "ok" },
+    ],
+  },
+  {
+    id: "AGR-006", name: "Lucas Almeida", phone: "+55 19 98765-4321", cpf: "678.901.234-55",
+    bank: { bank: "Banco do Brasil", agency: "3456", account: "44556-8" }, vehiclePlate: "STU-5E22",
+    rating: 4.7, trips30: 35,
+    docs: [
+      { type: "CNH", number: "06543210987", expiresAt: "2027-06-22", status: "ok" },
+      { type: "ANTT", number: "RNTRC-4420877", expiresAt: "2026-09-14", status: "ok" },
+      { type: "ASO", number: "ASO-2025-0820", expiresAt: "2026-08-20", status: "vencendo" },
+      { type: "CRLV", number: "CRLV-STU5E22", expiresAt: "2027-01-10", status: "ok" },
+      { type: "Seguro", number: "APL-442087", expiresAt: "2026-11-30", status: "ok" },
+    ],
+  },
+];
+
+const drivers = AGREGADOS.map(a => ({ id: a.id, name: a.name, phone: a.phone, plate: a.vehiclePlate }));
+
+const VEHICLE_MODELS: { model: string; type: VehicleData["type"]; hasPlatform: boolean }[] = [
+  { model: "VW Delivery 11.180", type: "Truck", hasPlatform: true },
+  { model: "Mercedes Accelo 1016", type: "Toco", hasPlatform: true },
+  { model: "Iveco Daily 70C17", type: "VUC", hasPlatform: false },
+  { model: "Volvo VM 270", type: "Truck", hasPlatform: true },
 ];
 
 const stages: DeliveryStage[] = ["solicitacao", "solicitacao", "crossdocking", "crossdocking", "preparacao", "preparacao", "execucao", "execucao", "execucao", "concluida", "concluida", "concluida"];
 const types: DeliveryType[] = ["entrega", "entrega", "entrega", "coleta", "reentrega", "remessa"];
 
+// Mapping stage -> default operational status (sub-status fino do Kanban)
+function defaultOpStatus(stage: DeliveryStage, i: number): OperationalStatus {
+  if (stage === "solicitacao") return "entrada_pendente";
+  if (stage === "crossdocking") return "programada";
+  if (stage === "preparacao") return "programada";
+  if (stage === "execucao") return i % 5 === 0 ? "ocorrencia" : "em_rota";
+  return i % 4 === 0 ? "faturada" : "entregue";
+}
+
+export const OPERATIONAL_STATUS_META: Record<OperationalStatus, { label: string; color: string }> = {
+  entrada_pendente: { label: "Entrada Pendente", color: "bg-muted/60 text-muted-foreground border-border" },
+  programada: { label: "Programada", color: "bg-info/15 text-info border-info/30" },
+  em_rota: { label: "Em Rota", color: "bg-primary/15 text-primary border-primary/30" },
+  entregue: { label: "Entregue", color: "bg-success/15 text-success border-success/30" },
+  ocorrencia: { label: "Ocorrência", color: "bg-destructive/15 text-destructive border-destructive/30" },
+  faturada: { label: "Faturada", color: "bg-secondary/40 text-secondary-foreground border-border" },
+};
+
+export const SEFAZ_META: Record<SefazStatus, { label: string; color: string }> = {
+  autorizada: { label: "Autorizada", color: "bg-success/15 text-success border-success/30" },
+  rejeitada: { label: "Rejeitada", color: "bg-destructive/15 text-destructive border-destructive/30" },
+  cancelada: { label: "Cancelada", color: "bg-muted/60 text-muted-foreground border-border" },
+  pendente: { label: "Pendente", color: "bg-warning/15 text-warning border-warning/30" },
+};
+
+export const SOURCE_META: Record<DataSource, { label: string; color: string }> = {
+  totvs_tms: { label: "TOTVS TMS", color: "bg-info/15 text-info border-info/30" },
+  make_email: { label: "Make / E-mail", color: "bg-primary/15 text-primary border-primary/30" },
+  field_tool: { label: "Ferramenta de Campo", color: "bg-warning/15 text-warning border-warning/30" },
+  manual: { label: "Manual", color: "bg-muted/60 text-muted-foreground border-border" },
+  api: { label: "API Cliente", color: "bg-success/15 text-success border-success/30" },
+};
+
 function rand<T>(arr: T[], i: number) { return arr[i % arr.length]; }
+
+function makeNfe(i: number, valor: number): NfeData {
+  return {
+    chave: `35260${String(1000000 + i * 7).padStart(7, "0")}550010001${String(100 + i).padStart(9, "0")}1${String(i % 10).padStart(8, "0")}`,
+    numero: String(440000 + i),
+    serie: "001",
+    valor,
+    emitidaEm: "05/05/2026 08:12",
+    statusSefaz: i % 13 === 0 ? "rejeitada" : "autorizada",
+  };
+}
+
+function makeCte(i: number, valor: number, stage: DeliveryStage): CteData {
+  return {
+    chave: `35260${String(2000000 + i * 11).padStart(7, "0")}570010001${String(200 + i).padStart(9, "0")}1${String(i % 10).padStart(8, "0")}`,
+    numero: String(880000 + i),
+    valor,
+    emitidoEm: stage === "concluida" ? "05/05/2026 14:10" : undefined,
+    statusSefaz: stage === "concluida" ? "autorizada" : "pendente",
+  };
+}
+
+function makeVehicle(i: number, stage: DeliveryStage): VehicleData {
+  const vm = rand(VEHICLE_MODELS, i);
+  return {
+    plate: drivers[i % drivers.length].plate,
+    model: vm.model,
+    type: vm.type,
+    hasPlatform: vm.hasPlatform,
+    lastPosition: stage === "execucao" ? {
+      lat: -23.55 + (i % 10) * 0.01,
+      lng: -46.63 + (i % 10) * 0.01,
+      timestamp: "há 30 s",
+      ignitionOn: i % 4 !== 0,
+      speedKmh: i % 4 === 0 ? 0 : 35 + (i % 25),
+    } : undefined,
+  };
+}
+
+function makePod(i: number, recipient: string): PodData {
+  return {
+    photoUrl: `https://placehold.co/600x400/0a2540/fff?text=POD+${100 + i}`,
+    signatureUrl: `https://placehold.co/300x100/fff/0a2540?text=Assinatura`,
+    gps: { lat: -23.55 + (i % 10) * 0.01, lng: -46.63 + (i % 10) * 0.01 },
+    timestamp: "05/05/2026 14:05",
+    pdfUrl: `s3://begur-pod/POD-BGR-${(100 + i).toString().padStart(4, "0")}.pdf`,
+    recipientName: recipient,
+    recipientDoc: "CPF 123.***.***-09",
+  };
+}
 
 function makeTimeline(stage: DeliveryStage, i: number): TimelineEvent[] {
   const base: TimelineEvent[] = [
-    { time: "08:12", title: "Solicitação recebida", description: "Via e-mail do cliente", type: "system" },
+    { time: "08:12", title: "NF-e recebida (Make)", description: "XML extraído do e-mail e validado", type: "system" },
   ];
   if (stage === "solicitacao") return base;
   base.push(
@@ -230,8 +408,8 @@ function makeTimeline(stage: DeliveryStage, i: number): TimelineEvent[] {
   );
   if (stage === "execucao") return base;
   base.push(
-    { time: "14:05", title: "Entregue com sucesso", description: "Recebido por João Pedro", type: "driver" },
-    { time: "14:10", title: "Comprovante registrado", description: "Foto e assinatura digital", type: "system" },
+    { time: "14:05", title: "POD coletado", description: "Foto + assinatura + GPS registrados pelo app", type: "driver" },
+    { time: "14:10", title: "CT-e autorizado pela SEFAZ", description: "TOTVS TMS confirmou emissão", type: "system" },
     { time: "14:30", title: "Feedback do cliente", description: "Avaliação positiva registrada", type: "client" },
     { time: "15:00", title: "Caso encerrado", description: "Concluído pelo analista", type: "analyst" },
   );
@@ -243,34 +421,47 @@ export const DELIVERIES: Delivery[] = Array.from({ length: 32 }).map((_, i) => {
   const [city, uf] = rand(cities, i * 3);
   const stage = rand(stages, i);
   const type = rand(types, i);
-  const driver = (stage === "preparacao" || stage === "execucao" || stage === "concluida") ? rand(drivers, i) : undefined;
+  const driverObj = (stage === "preparacao" || stage === "execucao" || stage === "concluida") ? drivers[i % drivers.length] : undefined;
   const slaStatus = i % 11 === 0 ? "breached" : i % 7 === 0 ? "at_risk" : "on_track";
+  const value = 480 + (i * 137) % 4200;
+  const itemValor = 8500 + (i * 311) % 24000;
+  const opStatus = defaultOpStatus(stage, i);
+  const recipient = stage === "concluida" ? "João Pedro" : "";
 
   return {
     id: `BGR-${(100 + i).toString().padStart(4, "0")}`,
+    osNumber: `OS-${(54200 + i).toString()}`,
+    viagem: stage !== "solicitacao" ? `TRP-${44200 + i}` : undefined,
+    source: rand<DataSource>(["totvs_tms", "make_email", "totvs_tms", "api", "manual"], i),
     client: client.name,
     clientContact: client.contact,
     type,
     stage,
+    operationalStatus: opStatus,
     origin: "CD Begur — Barueri/SP",
     destination: `Rua das Flores, 420 — ${city}/${uf}`,
     city,
     uf,
     items: [
-      { name: rand(equip, i), qty: 1 + (i % 5) },
-      { name: rand(equip, i + 3), qty: 1 + (i % 3) },
+      { name: rand(equip, i), qty: 1 + (i % 5), sku: `SKU-${4400 + i}` },
+      { name: rand(equip, i + 3), qty: 1 + (i % 3), sku: `SKU-${4400 + i + 3}` },
     ],
-    driver: driver?.name,
-    driverPhone: driver?.phone,
+    driver: driverObj?.name,
+    driverPhone: driverObj?.phone,
+    driverId: driverObj?.id,
+    vehicle: driverObj ? makeVehicle(i, stage) : undefined,
+    nfe: stage !== "solicitacao" || i % 2 === 0 ? makeNfe(i, itemValor) : undefined,
+    cte: stage === "execucao" || stage === "concluida" ? makeCte(i, value, stage) : undefined,
+    pod: stage === "concluida" ? makePod(i, recipient) : undefined,
     sla: ["4h", "6h", "12h", "24h", "Mesmo dia"][i % 5],
     slaStatus,
     created: ["há 10 min", "há 30 min", "há 1h", "há 2h", "há 4h", "Ontem", "há 2 dias"][i % 7],
     eta: stage === "execucao" ? ["14:30", "15:45", "16:20", "17:00"][i % 4] : undefined,
-    value: 480 + (i * 137) % 4200,
+    value,
     analystId: ["renata", "marcos", "carla"][i % 3],
     timeline: makeTimeline(stage, i),
     occurrences: [],
-    recipientName: stage === "concluida" ? "João Pedro" : undefined,
+    recipientName: recipient || undefined,
     feedback: stage === "concluida" && i % 3 === 0 ? "Entrega rápida e sem problemas. Obrigado!" : undefined,
   };
 });
