@@ -14,7 +14,7 @@ export default function Relatorios() {
   const atRisk = DELIVERIES.filter(d => d.slaStatus !== "on_track").length;
   const openOccurrences = OCCURRENCES_DATA.filter(o => o.status !== "resolvida").length;
 
-  const stageDistribution = (["solicitacao", "preparacao", "execucao", "retorno", "concluida"] as DeliveryStage[]).map(s => ({
+  const stageDistribution = (["solicitacao", "crossdocking", "preparacao", "execucao", "concluida"] as DeliveryStage[]).map(s => ({
     stage: s,
     label: STAGE_META[s].label,
     count: DELIVERIES.filter(d => d.stage === s).length,
