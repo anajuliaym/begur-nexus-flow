@@ -736,3 +736,95 @@ export const CUSTOMERS = [
   { name: "Seara", segment: "Freezers Horizontais", orders30: 378, otif: 96.4, sla: "12h", contact: "logistica@seara.com.br" },
   { name: "Solar", segment: "Ilhas Refrigeradas", orders30: 445, otif: 97.3, sla: "12h", contact: "distribuicao@solar.com.br" },
 ];
+
+// =====================================================================
+// WMS (somente leitura) — Saldo de equipamentos por SKU/cliente/local
+// Polling a cada 15-30 min do TOTVS WMS
+// =====================================================================
+export interface WmsStock {
+  sku: string;
+  product: string;
+  client: string;
+  location: string;       // CD/posição lógica
+  onHand: number;
+  reserved: number;
+  available: number;
+  lastMovement: string;
+  slowMoving: boolean;    // > 60 dias parado
+}
+
+export const WMS_STOCK: WmsStock[] = [
+  { sku: "SKU-4400", product: "Freezer Metalfrio VF55", client: "Metalfrio T1", location: "CD Barueri / A-12", onHand: 240, reserved: 38, available: 202, lastMovement: "há 2h", slowMoving: false },
+  { sku: "SKU-4401", product: "Freezer Horizontal Metalfrio DA420", client: "Seara", location: "CD Barueri / B-04", onHand: 180, reserved: 60, available: 120, lastMovement: "há 30 min", slowMoving: false },
+  { sku: "SKU-4402", product: "Refrigerador Vertical Metalfrio VB28", client: "Natural One", location: "CD Barueri / C-21", onHand: 95, reserved: 12, available: 83, lastMovement: "há 5h", slowMoving: false },
+  { sku: "SKU-4403", product: "Cooler Metalfrio CL200", client: "Heineken", location: "CD Barueri / D-08", onHand: 320, reserved: 145, available: 175, lastMovement: "há 15 min", slowMoving: false },
+  { sku: "SKU-4404", product: "Freezer Expositor Metalfrio VF50F", client: "Heineken", location: "CD Barueri / D-09", onHand: 88, reserved: 15, available: 73, lastMovement: "há 1h", slowMoving: false },
+  { sku: "SKU-4405", product: "Geladeira Comercial Metalfrio VN44", client: "Bacio di Latte", location: "CD Barueri / E-02", onHand: 42, reserved: 8, available: 34, lastMovement: "há 4h", slowMoving: false },
+  { sku: "SKU-4406", product: "Cervejeira Metalfrio VN50", client: "Heineken", location: "CD Barueri / D-10", onHand: 156, reserved: 22, available: 134, lastMovement: "há 6h", slowMoving: false },
+  { sku: "SKU-4407", product: "Freezer Ilha Metalfrio NF40", client: "Bacio di Latte", location: "CD Barueri / E-05", onHand: 28, reserved: 3, available: 25, lastMovement: "há 8h", slowMoving: false },
+  { sku: "SKU-4408", product: "Refrigerador Solar 440L", client: "Solar", location: "CD Barueri / F-11", onHand: 12, reserved: 0, available: 12, lastMovement: "há 72 dias", slowMoving: true },
+  { sku: "SKU-4409", product: "Expositor Refrigerado Froneri EF300", client: "Froneri", location: "CD Barueri / G-03", onHand: 64, reserved: 18, available: 46, lastMovement: "há 1h", slowMoving: false },
+  { sku: "SKU-4410", product: "Freezer Vertical Nestlé FV120", client: "Nestlé", location: "CD Barueri / H-07", onHand: 110, reserved: 25, available: 85, lastMovement: "há 3h", slowMoving: false },
+  { sku: "SKU-4411", product: "Ilha Refrigerada Solar IR200", client: "Solar", location: "CD Barueri / F-14", onHand: 5, reserved: 0, available: 5, lastMovement: "há 95 dias", slowMoving: true },
+];
+
+// =====================================================================
+// Status das Integrações — exibido no painel operacional
+// =====================================================================
+export interface IntegrationStatus {
+  id: string;
+  name: string;
+  type: "totvs_tms" | "totvs_wms" | "make" | "field_tool" | "sefaz";
+  description: string;
+  status: "online" | "degraded" | "offline";
+  lastSync: string;
+  latencyMs?: number;
+  eventsToday?: number;
+}
+
+export const INTEGRATIONS: IntegrationStatus[] = [
+  { id: "int-totvs-tms", name: "TOTVS TMS", type: "totvs_tms", description: "NF-e, CT-e, frete e contas a pagar", status: "online", lastSync: "há 12 s", latencyMs: 230, eventsToday: 487 },
+  { id: "int-totvs-wms", name: "TOTVS WMS", type: "totvs_wms", description: "Saldo, movimentações e inventário (leitura)", status: "online", lastSync: "há 14 min", latencyMs: 410, eventsToday: 12 },
+  { id: "int-make", name: "Make (E-mail → OS)", type: "make", description: "Extração de XML de NF-e por e-mail", status: "online", lastSync: "há 3 min", eventsToday: 38 },
+  { id: "int-field", name: "Ferramenta de Campo", type: "field_tool", description: "GPS, roteirização e POD", status: "degraded", lastSync: "há 45 s", latencyMs: 1820, eventsToday: 1243 },
+  { id: "int-sefaz", name: "SEFAZ", type: "sefaz", description: "Validação fiscal NF-e/CT-e", status: "online", lastSync: "há 1 min", latencyMs: 680, eventsToday: 892 },
+];
+
+// =====================================================================
+// Conferência de fechamento financeiro de agregados
+// (Plataforma calcula valor correto e envia ao TOTVS para pagamento)
+// =====================================================================
+export interface AgregadoSettlement {
+  agregadoId: string;
+  agregadoName: string;
+  period: string;
+  trips: number;
+  baseValue: number;
+  bonus: number;
+  deductions: number;
+  finalValue: number;
+  totvsValue: number;     // valor lançado no TOTVS para conferência
+  diff: number;
+  status: "ok" | "divergente" | "pendente";
+}
+
+export const AGREGADO_SETTLEMENTS: AgregadoSettlement[] = AGREGADOS.map((a, i) => {
+  const base = 4500 + (i * 312) % 3800;
+  const bonus = i % 2 === 0 ? 320 : 180;
+  const ded = i % 3 === 0 ? 240 : 0;
+  const final = base + bonus - ded;
+  const totvs = i % 4 === 0 ? final - 100 : final;
+  return {
+    agregadoId: a.id,
+    agregadoName: a.name,
+    period: "Abr/2026",
+    trips: a.trips30,
+    baseValue: base,
+    bonus,
+    deductions: ded,
+    finalValue: final,
+    totvsValue: totvs,
+    diff: final - totvs,
+    status: final === totvs ? "ok" : (i % 5 === 0 ? "pendente" : "divergente"),
+  };
+});
