@@ -89,24 +89,76 @@ export interface ServiceRequest {
   convertedTo?: string;
 }
 
+export interface NfeData {
+  chave: string;          // 44 dígitos
+  numero: string;
+  serie: string;
+  valor: number;
+  emitidaEm: string;
+  statusSefaz: SefazStatus;
+}
+
+export interface CteData {
+  chave: string;
+  numero: string;
+  valor: number;
+  emitidoEm?: string;
+  statusSefaz: SefazStatus;
+}
+
+export interface VehiclePosition {
+  lat: number;
+  lng: number;
+  timestamp: string;
+  ignitionOn: boolean;
+  speedKmh: number;
+}
+
+export interface VehicleData {
+  plate: string;
+  model: string;
+  type: "VUC" | "Truck" | "Toco" | "Carreta";
+  hasPlatform: boolean;
+  lastPosition?: VehiclePosition;
+}
+
+export interface PodData {
+  photoUrl: string;
+  signatureUrl: string;
+  gps: { lat: number; lng: number };
+  timestamp: string;
+  pdfUrl: string;
+  recipientName: string;
+  recipientDoc?: string;
+}
+
 export interface Delivery {
-  id: string;
+  id: string;                        // BGR-XXXX (interno)
+  osNumber: string;                  // OS-XXXXX (TOTVS TMS)
+  viagem?: string;                   // TRP-XXXXX (roteirização)
+  source: DataSource;                // origem do dado (TOTVS / Make / manual)
   client: string;
   clientContact: string;
   type: DeliveryType;
-  stage: DeliveryStage;
+  stage: DeliveryStage;              // pipeline visual de alto nível (5 fases)
+  operationalStatus: OperationalStatus; // sub-status fino (Kanban operacional)
   origin: string;
   destination: string;
   city: string;
   uf: string;
-  items: { name: string; qty: number }[];
+  items: { name: string; qty: number; sku?: string }[];
   driver?: string;
   driverPhone?: string;
+  driverId?: string;                 // FK -> AGREGADOS
+  vehicle?: VehicleData;
+  nfe?: NfeData;
+  cte?: CteData;
+  pod?: PodData;
   sla: string;
   slaStatus: "on_track" | "at_risk" | "breached";
   created: string;
   eta?: string;
-  value: number;
+  value: number;                     // valor do frete
   analystId: string;
   timeline: TimelineEvent[];
   occurrences: string[];
