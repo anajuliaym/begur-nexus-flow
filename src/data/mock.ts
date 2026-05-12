@@ -1,6 +1,10 @@
-// Begur Control Tower — Modelo de dados centrado em Entrega (Case)
+// Begur Controle — Modelo de dados centrado em Entrega (Case)
+// Plataforma SaaS de gestão operacional logística.
+// NÃO substitui TOTVS TMS/WMS — centraliza, integra (API) e exibe operação em tempo real.
+// Fonte de dados: TOTVS TMS (NF-e/CT-e/frete), TOTVS WMS (estoque, leitura), Make (e-mail→OS),
+// Ferramenta de campo (GPS/roteirização/POD).
 // Serviços Begur: Cross Docking, Armazenagem, Separação/Kits, Movimentação/Positivação,
-// Logística Reversa, Distribuição Nacional, Gestão de Fretes, Rastreamento de Entregas
+// Logística Reversa, Distribuição Nacional, Gestão de Fretes, Rastreamento.
 
 export type DeliveryStage = "solicitacao" | "crossdocking" | "preparacao" | "execucao" | "concluida";
 export type DeliveryType = "entrega" | "coleta" | "reentrega" | "remessa";
@@ -8,6 +12,18 @@ export type OccurrenceType = "recusa" | "avaria" | "atraso" | "endereco" | "reen
 export type Severity = "low" | "medium" | "high";
 export type RequestChannel = "email" | "whatsapp" | "manual" | "api";
 export type RequestStatus = "pendente" | "em_analise" | "convertida" | "recusada";
+
+// Status operacional fino (Painel Kanban — espelha o fluxo TOTVS/Field Tool)
+export type OperationalStatus =
+  | "entrada_pendente"   // NF-e recebida, aguardando validação
+  | "programada"         // OS criada e roteirizada
+  | "em_rota"            // veículo em trânsito (GPS ativo)
+  | "entregue"           // POD coletado
+  | "ocorrencia"         // exceção registrada
+  | "faturada";          // CT-e emitido / fechamento OK
+
+export type SefazStatus = "autorizada" | "rejeitada" | "cancelada" | "pendente";
+export type DataSource = "totvs_tms" | "make_email" | "field_tool" | "manual" | "api";
 
 export const STAGE_META: Record<DeliveryStage, { label: string; color: string; order: number }> = {
   solicitacao: { label: "Solicitação", color: "bg-info/15 text-info border-info/30", order: 0 },
